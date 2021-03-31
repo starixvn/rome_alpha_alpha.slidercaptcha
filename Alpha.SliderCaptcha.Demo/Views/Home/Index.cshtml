@@ -1,0 +1,34 @@
+﻿@model Alpha.SliderCaptcha.Demo.Models.IndexViewModel
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<form class="form-signin" method="POST">
+    <h2 class="form-signin-heading">Please sign in</h2>
+    <label for="inputUsername" class="sr-only">Username</label>
+    <input type="text" id="inputUsername" name="username" class="form-control" placeholder="Username" required autofocus>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+    <input id="captcha" name="token" hidden>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+</form>
+
+@if (Model.IsVerified)
+{
+    @section Scripts {
+        <script>
+            alert('Login successfully');
+        </script>
+    }
+}
+else if (Model.IsTokenRequired)
+{
+    @section Scripts {
+        <script>
+            const captchaInstance = sliderCaptcha('captcha', {
+                lang: "vi",
+                baseUri: "@Url.Content("~")"
+            });
+        </script>
+    }
+}
