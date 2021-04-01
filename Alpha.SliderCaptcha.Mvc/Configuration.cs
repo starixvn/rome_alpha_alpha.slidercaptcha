@@ -1,15 +1,13 @@
 using Alpha.SliderCaptcha.Models;
 using Alpha.SliderCaptcha.Services;
 
-namespace Alpha.SliderCaptcha
+namespace Alpha.SliderCaptcha.Mvc
 {
     public static class Configuration
     {
         public const string BackgroundPath = "backgrounds";
 
         public const string SliderPath = "sliders";
-
-        public const string CachePrefix = "Alpha.SliderCaptcha";
 
         public static CaptchaOptions CaptchaOptions { get; private set; }
 

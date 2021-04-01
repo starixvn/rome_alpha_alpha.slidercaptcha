@@ -1,4 +1,4 @@
-namespace Alpha.SliderCaptcha.Models
+namespace Alpha.SliderCaptcha.Mvc.Models
 {
     public class VerifyRequestModel
     {

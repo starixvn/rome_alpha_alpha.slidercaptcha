@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
 using Alpha.SliderCaptcha.Demo.Models;
+using Alpha.SliderCaptcha.Mvc;
 using Alpha.SliderCaptcha.Services;
 
 namespace Alpha.SliderCaptcha.Demo.Controllers
@@ -10,12 +11,13 @@ namespace Alpha.SliderCaptcha.Demo.Controllers
         private readonly ICaptchaService captchaService;
 
         public HomeController()
-            : this(new ServiceFactory())
+            : this(null)
         {
         }
 
         public HomeController(IServiceFactory serviceFactory)
         {
+            serviceFactory = serviceFactory ?? new ServiceFactory();
             captchaService = serviceFactory.CaptchaService;
         }
 
@@ -29,7 +31,7 @@ namespace Alpha.SliderCaptcha.Demo.Controllers
         [ActionName("Index")]
         public async Task<ActionResult> IndexPost(IndexModel model)
         {
-            var isVerified = await captchaService.IsVerified(model.Token);
+            var isVerified = await captchaService.IsVerifiedAsync(model.Token).ConfigureAwait(false);
             return View(new IndexViewModel
             {
                 IsVerified = isVerified,

@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Web;
-using Alpha.SliderCaptcha.Models;
 
 namespace Alpha.SliderCaptcha.Services
 {

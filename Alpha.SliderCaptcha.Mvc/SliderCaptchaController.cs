@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
 using Alpha.SliderCaptcha.Models;
+using Alpha.SliderCaptcha.Mvc.Models;
 using Alpha.SliderCaptcha.Services;
 
 namespace Alpha.SliderCaptcha.Mvc
@@ -18,14 +19,14 @@ namespace Alpha.SliderCaptcha.Mvc
         [HttpPost]
         public async Task<ActionResult> Generate(GenerateRequestModel model)
         {
-            var result = await captchaService.Generate(model.Token);
+            var result = await captchaService.GenerateAsync(model.Token).ConfigureAwait(false);
             return Json(result);
         }
 
         [HttpPost]
         public async Task<ActionResult> Verify(VerifyRequestModel model)
         {
-            var result = await captchaService.Verify(model.Token, model.Position);
+            var result = await captchaService.VerifyAsync(model.Token, model.Position).ConfigureAwait(false);
             return Json(new ResponseModel(result.Code, result.Reason));
         }
     }

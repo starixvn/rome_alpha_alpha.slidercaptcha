@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alpha.SliderCaptcha.Demo", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alpha.SliderCaptcha", "Alpha.SliderCaptcha\Alpha.SliderCaptcha.csproj", "{672243B1-C048-4CD8-9F53-E259E4CF2672}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alpha.SliderCaptcha.Mvc", "Alpha.SliderCaptcha.Mvc\Alpha.SliderCaptcha.Mvc.csproj", "{ADA13CDD-8EF2-45C5-AB4B-A7674762829C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{672243B1-C048-4CD8-9F53-E259E4CF2672}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{672243B1-C048-4CD8-9F53-E259E4CF2672}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{672243B1-C048-4CD8-9F53-E259E4CF2672}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADA13CDD-8EF2-45C5-AB4B-A7674762829C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADA13CDD-8EF2-45C5-AB4B-A7674762829C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADA13CDD-8EF2-45C5-AB4B-A7674762829C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADA13CDD-8EF2-45C5-AB4B-A7674762829C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

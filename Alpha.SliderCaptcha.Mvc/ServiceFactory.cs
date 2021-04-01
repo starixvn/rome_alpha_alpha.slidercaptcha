@@ -1,7 +1,8 @@
 ﻿using System.Web.Mvc;
+using Alpha.SliderCaptcha.Services;
 using Fanex.Caching;
 
-namespace Alpha.SliderCaptcha.Services
+namespace Alpha.SliderCaptcha.Mvc
 {
     public interface IServiceFactory
     {

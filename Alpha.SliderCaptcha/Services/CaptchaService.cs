@@ -8,15 +8,22 @@ namespace Alpha.SliderCaptcha.Services
 {
     public interface ICaptchaService
     {
-        Task<GenerateResult> Generate(string token);
+        GenerateResult Generate(string token);
 
-        Task<VerifyResult> Verify(string token, int position);
+        Task<GenerateResult> GenerateAsync(string token);
 
-        Task<bool> IsVerified(string token);
+        VerifyResult Verify(string token, int position);
+
+        Task<VerifyResult> VerifyAsync(string token, int position);
+
+        bool IsVerfied(string token);
+
+        Task<bool> IsVerifiedAsync(string token);
     }
 
     public class CaptchaService : ICaptchaService
     {
+        private const string CachePrefix = "Alpha.SliderCaptcha";
         private readonly CaptchaOptions captchaOptions;
         private readonly ICacheService cacheService;
         private readonly ITokenService tokenService;
@@ -32,28 +39,41 @@ namespace Alpha.SliderCaptcha.Services
 
         private string GetVerifyingCacheKey(string token)
         {
-            return $"{Configuration.CachePrefix}_{token}_Verifying";
+            return $"{CachePrefix}_{token}_Verifying";
         }
 
         private string GetVerifiedCacheKey(string token)
         {
-            return $"{Configuration.CachePrefix}_{token}_Verified";
+            return $"{CachePrefix}_{token}_Verified";
         }
 
-        public async Task<GenerateResult> Generate(string token)
+        public GenerateResult Generate(string token)
         {
             token = tokenService.IsValid(token) ? token : tokenService.Generate();
             using (var model = generateService.Generate())
             {
                 var cacheKey = GetVerifyingCacheKey(token);
-                await cacheService.SetAsync(cacheKey, model.Point.X);
+                cacheService.Set(cacheKey, model.Point.X);
                 var backgroundBase64String = model.Background.ToBase64String();
                 var sliceBase64String = model.Slice.ToBase64String();
                 return new GenerateResult(token, backgroundBase64String, sliceBase64String, model.Point.Y);
             }
         }
 
-        public async Task<VerifyResult> Verify(string token, int position)
+        public async Task<GenerateResult> GenerateAsync(string token)
+        {
+            token = tokenService.IsValid(token) ? token : tokenService.Generate();
+            using (var model = generateService.Generate())
+            {
+                var cacheKey = GetVerifyingCacheKey(token);
+                await cacheService.SetAsync(cacheKey, model.Point.X).ConfigureAwait(false);
+                var backgroundBase64String = model.Background.ToBase64String();
+                var sliceBase64String = model.Slice.ToBase64String();
+                return new GenerateResult(token, backgroundBase64String, sliceBase64String, model.Point.Y);
+            }
+        }
+
+        public VerifyResult Verify(string token, int position)
         {
             if (!tokenService.IsValid(token))
             {
@@ -61,7 +81,7 @@ namespace Alpha.SliderCaptcha.Services
             }
 
             var verifyingCacheKey = GetVerifyingCacheKey(token);
-            var currentPosition = await cacheService.GetAsync<int>(verifyingCacheKey);
+            var currentPosition = cacheService.Get<int>(verifyingCacheKey);
             if (currentPosition == 0)
             {
                 return new VerifyResult(VerifyResult.Timeout, "Timeout error. Please try again");
@@ -73,12 +93,37 @@ namespace Alpha.SliderCaptcha.Services
                 return new VerifyResult(VerifyResult.Incorrect, "Incorrect. Please try again");
             }
 
-            await cacheService.RemoveAsync(verifyingCacheKey);
-            await cacheService.SetAsync(GetVerifiedCacheKey(token), DateTime.UtcNow);
+            cacheService.Remove(verifyingCacheKey);
+            cacheService.Set(GetVerifiedCacheKey(token), DateTime.UtcNow);
             return new VerifyResult(VerifyResult.Correct, "Success");
         }
 
-        public async Task<bool> IsVerified(string token)
+        public async Task<VerifyResult> VerifyAsync(string token, int position)
+        {
+            if (!tokenService.IsValid(token))
+            {
+                return new VerifyResult(VerifyResult.InvalidToken, "Invalid request");
+            }
+
+            var verifyingCacheKey = GetVerifyingCacheKey(token);
+            var currentPosition = await cacheService.GetAsync<int>(verifyingCacheKey).ConfigureAwait(false);
+            if (currentPosition == 0)
+            {
+                return new VerifyResult(VerifyResult.Timeout, "Timeout error. Please try again");
+            }
+
+            var isSuccess = Math.Abs(currentPosition - position) <= captchaOptions.AcceptRange;
+            if (!isSuccess)
+            {
+                return new VerifyResult(VerifyResult.Incorrect, "Incorrect. Please try again");
+            }
+
+            await cacheService.RemoveAsync(verifyingCacheKey).ConfigureAwait(false);
+            await cacheService.SetAsync(GetVerifiedCacheKey(token), DateTime.UtcNow).ConfigureAwait(false);
+            return new VerifyResult(VerifyResult.Correct, "Success");
+        }
+
+        public bool IsVerfied(string token)
         {
             if (!tokenService.IsValid(token))
             {
@@ -86,12 +131,29 @@ namespace Alpha.SliderCaptcha.Services
             }
 
             var verifiedCacheKey = GetVerifiedCacheKey(token);
-            if (!await cacheService.ContainAsync(verifiedCacheKey))
+            if (!cacheService.Contain(verifiedCacheKey))
             {
                 return false;
             }
 
-            await cacheService.RemoveAsync(verifiedCacheKey);
+            cacheService.Remove(verifiedCacheKey);
+            return true;
+        }
+
+        public async Task<bool> IsVerifiedAsync(string token)
+        {
+            if (!tokenService.IsValid(token))
+            {
+                return false;
+            }
+
+            var verifiedCacheKey = GetVerifiedCacheKey(token);
+            if (!await cacheService.ContainAsync(verifiedCacheKey).ConfigureAwait(false))
+            {
+                return false;
+            }
+
+            await cacheService.RemoveAsync(verifiedCacheKey).ConfigureAwait(false);
             return true;
         }
     }

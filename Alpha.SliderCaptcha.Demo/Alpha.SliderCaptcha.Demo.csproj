@@ -256,6 +256,10 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Alpha.SliderCaptcha.Mvc\Alpha.SliderCaptcha.Mvc.csproj">
+      <Project>{ada13cdd-8ef2-45c5-ab4b-a7674762829c}</Project>
+      <Name>Alpha.SliderCaptcha.Mvc</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Alpha.SliderCaptcha\Alpha.SliderCaptcha.csproj">
       <Project>{672243b1-c048-4cd8-9f53-e259e4cf2672}</Project>
       <Name>Alpha.SliderCaptcha</Name>
