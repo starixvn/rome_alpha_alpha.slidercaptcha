@@ -54,30 +54,32 @@
     slider_ready: string;
     slider_fail: string;
     captcha_loading: string;
-    refresh_title: string;
-    close_title: string;
   };
 
   const langResources: {
     [key: string]: LangResource;
   } = {
-    en: {
-      title: "Captcha Validation",
+    "en-US": {
+      title: "Security/Safety Verification",
       slider_ready: "Slide to complete the puzzle",
       slider_fail: "Please try again",
-      captcha_loading: "Loading",
-      refresh_title: "Refresh",
-      close_title: "Close",
+      captcha_loading: "Loading ...",
     },
-    vi: {
-      title: "Xác thực người dùng",
-      slider_ready: "Trượt để hoàn thành câu đố",
-      slider_fail: "Xin vui lòng thử lại",
-      captcha_loading: "Đang tải câu đố",
-      refresh_title: "Làm mới",
-      close_title: "Đóng",
+    "zh-CN": {
+      title: "安全验证",
+      slider_ready: "Slide to complete the puzzle",
+      slider_fail: "请控制拼图片对齐缺口",
+      captcha_loading: "正在载入...",
+    },
+    "zh-TW": {
+      title: "安全驗證",
+      slider_ready: "Slide to complete the puzzle",
+      slider_fail: "請控制拼圖片對齊缺口",
+      captcha_loading: "正在載入...",
     },
   };
+
+  const defaultLang = "en-US";
 
   if (typeof Object.assign !== "function") {
     // Must be writable: true, enumerable: false, configurable: true
@@ -126,15 +128,7 @@
       lang = getParameterByName("language");
     }
 
-    if (lang) {
-      lang = lang.substr(0, 2);
-      const langs = Object.keys(langResources);
-      if (langs.indexOf(lang) !== -1) {
-        return lang;
-      }
-    }
-
-    return "en";
+    return lang || defaultLang;
   };
 
   const createElement = (
@@ -295,7 +289,7 @@
     constructor(element: HTMLElement, options = SliderCaptcha.defaultOptions) {
       this.element = element;
       this.options = { ...SliderCaptcha.defaultOptions, ...options };
-      this.langResource = langResources[this.options.lang];
+      this.langResource = this.getLangResource();
       if (
         !location.origin
           .toLowerCase()
@@ -309,6 +303,16 @@
       this.bindEvents();
       this.reset();
     }
+
+    getLangResource = () => {
+      let lang = this.options.lang || defaultLang;
+      const langs = Object.keys(langResources);
+      if (langs.indexOf(lang) === -1) {
+        lang = defaultLang;
+      }
+
+      return langResources[lang];
+    };
 
     initDOM = () => {
       this.container = document.body.appendChild(
@@ -328,11 +332,9 @@
       this.refreshIcon = headerIcons.appendChild(
         createElement("i", "captcha-refresh-icon", refreshSvg)
       );
-      this.refreshIcon.title = this.langResource.refresh_title;
       this.closeIcon = headerIcons.appendChild(
         createElement("i", "captcha-close-icon", closeSvg)
       );
-      this.closeIcon.title = this.langResource.close_title;
 
       // body
       const captchaBody = this.container.appendChild(
@@ -433,7 +435,10 @@
           sliderSvg = sliderSuccessSvg;
           break;
       }
-      this.sliderButton.innerHTML = sliderSvg;
+
+      if (status !== SliderStatus.Move) {
+        this.sliderButton.innerHTML = sliderSvg;
+      }
     };
 
     bindEvents = () => {
@@ -464,19 +469,20 @@
         this.toggleSliderStatus(SliderStatus.Move);
         originX = x;
       };
-      this.sliderButton.addEventListener("mousedown", (e) =>
-        handleDragStart(e.clientX, e.clientY)
-      );
-      this.sliderButton.addEventListener("touchstart", (e) =>
-        handleDragStart(e.touches[0].clientX, e.touches[0].clientY)
-      );
+      this.sliderButton.addEventListener("mousedown", (e) => {
+        handleDragStart(e.clientX, e.clientY);
+      });
+      this.sliderButton.addEventListener("touchstart", (e) => {
+        //console.log("touchstart");
+        handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
+      });
 
       const handleDragMove = (x: number, y: number) => {
         if (this.sliderStatus !== SliderStatus.Move) {
           return;
         }
 
-        console.log("handleDragMove");
+        console.log(`handleDragMove (x: ${x}, y: ${y})`);
         const moveX = Math.min(
           Math.max(x - originX, 0),
           this.options.width - this.options.sliderWidth
@@ -487,12 +493,16 @@
       };
       document.addEventListener(
         "mousemove",
-        (this.documentMousemove = (e) => handleDragMove(e.clientX, e.clientY))
+        (this.documentMousemove = (e) => {
+          handleDragMove(e.clientX, e.clientY);
+        })
       );
       document.addEventListener(
         "touchmove",
-        (this.documentTouchmove = (e) =>
-          handleDragMove(e.touches[0].clientX, e.touches[0].clientY))
+        (this.documentTouchmove = (e) => {
+          //console.log("touchmove");
+          handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
+        })
       );
 
       const handleDragEnd = () => {
@@ -531,11 +541,16 @@
 
       document.addEventListener(
         "mouseup",
-        (this.documentMouseup = () => handleDragEnd())
+        (this.documentMouseup = () => {
+          handleDragEnd();
+        })
       );
       document.addEventListener(
         "touchend",
-        (this.documentTouchend = () => handleDragEnd())
+        (this.documentTouchend = (e) => {
+          //console.log("touchend");
+          handleDragEnd();
+        })
       );
     };
 

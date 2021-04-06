@@ -16,6 +16,7 @@ module.exports = ({ mode }) => {
     mode,
     watch: isDev,
     entry: ["./src/index.ts", "./src/index.scss"],
+    target: 'es5',
     output: {
       path: isDev ? devOutputPath : path.resolve(__dirname, "dist"),
       filename: "Scripts/alpha.slider-captcha.js",

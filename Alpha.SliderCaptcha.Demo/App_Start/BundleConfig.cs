@@ -20,12 +20,10 @@ namespace Alpha.SliderCaptcha.Demo
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js",
-                      "~/Scripts/alpha.slider-captcha.js"));
+                      "~/Scripts/bootstrap.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/alpha.slider-captcha.css",
                       "~/Content/site.css"));
         }
     }

@@ -34,6 +34,7 @@ namespace Alpha.SliderCaptcha.Demo.Controllers
             var isVerified = await captchaService.IsVerifiedAsync(model.Token).ConfigureAwait(false);
             return View(new IndexViewModel
             {
+                Username = model.Username,
                 IsVerified = isVerified,
                 IsTokenRequired = true
             });
