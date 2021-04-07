@@ -81,6 +81,29 @@
 
   const defaultLang = "en-US";
 
+  const originalRemove = Element.prototype.remove;
+  Element.prototype.remove = function () {
+    if (originalRemove) {
+      originalRemove.call(this);
+    } else {
+      this.parentNode && this.parentNode.removeChild(this);
+    }
+  };
+
+  if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function (searchString, position) {
+      position = position || 0;
+      return this.indexOf(searchString, position) === position;
+    };
+  }
+
+  if (!String.prototype.endsWith) {
+    String.prototype.endsWith = function (searchString, position) {
+      position = position || this.length - searchString.length;
+      return this.indexOf(searchString, position) === position;
+    };
+  }
+
   if (typeof Object.assign !== "function") {
     // Must be writable: true, enumerable: false, configurable: true
     Object.defineProperty(Object, "assign", {
@@ -209,37 +232,48 @@
     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
   </svg>`;
 
-  const makeRequest = <T>(method: string, url: string, obj = {}) => {
-    return new Promise(
-      (
-        resolve: (value: T) => void,
-        reject: (value: { status: number; statusText: string }) => void
-      ) => {
-        const xhr = new XMLHttpRequest();
-        const now = new Date();
-        url += (url.indexOf("?") === -1 ? "?" : "&") + `t=${now.getTime()}`;
-        xhr.open(method, url);
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            const jsonResponse = JSON.parse(xhr.response) as T;
-            resolve(jsonResponse);
-          } else {
-            reject({
-              status: xhr.status,
-              statusText: xhr.statusText,
-            });
-          }
-        };
-        xhr.onerror = () => {
-          reject({
-            status: xhr.status,
-            statusText: xhr.statusText,
-          });
-        };
-        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xhr.send(JSON.stringify(obj));
+  const makeRequest = <T>(
+    method: string,
+    url: string,
+    obj = {},
+    resolve: (value: T) => void,
+    reject: (value: { status: number; statusText: string }) => void
+  ) => {
+    const xhr = new XMLHttpRequest();
+    const now = new Date();
+    url += (url.indexOf("?") === -1 ? "?" : "&") + `t=${now.getTime()}`;
+    xhr.open(method, url);
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const jsonResponse = JSON.parse(xhr.response) as T;
+        resolve(jsonResponse);
+      } else {
+        reject({
+          status: xhr.status,
+          statusText: xhr.statusText,
+        });
       }
-    );
+    };
+    xhr.onerror = () => {
+      reject({
+        status: xhr.status,
+        statusText: xhr.statusText,
+      });
+    };
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify(obj));
+  };
+
+  const joinURL = (baseUrl: string, relativeUrl: string): string => {
+    if (baseUrl.endsWith("/")) {
+      baseUrl = baseUrl.substr(0, baseUrl.length - 1);
+    }
+
+    if (relativeUrl.startsWith("/")) {
+      relativeUrl = relativeUrl.substr(1);
+    }
+
+    return `${baseUrl}/${relativeUrl}`;
   };
 
   class SliderCaptcha {
@@ -276,7 +310,7 @@
     private documentTouchend;
     private token: string | undefined = undefined;
     private langResource: LangResource;
-    private baseUrl: URL;
+    private baseUrl: string;
 
     get backgroundCanvasContext() {
       return this.backgroundCanvas.getContext("2d");
@@ -290,15 +324,20 @@
       this.element = element;
       this.options = { ...SliderCaptcha.defaultOptions, ...options };
       this.langResource = this.getLangResource();
+      const locationOrigin =
+        location.origin ??
+        `${location.protocol}//${location.hostname}${
+          location.port ? ":" + location.port : ""
+        }`;
       if (
-        !location.origin
+        !locationOrigin
           .toLowerCase()
           .startsWith(this.options.baseUri.toLowerCase())
       ) {
-        this.baseUrl = new URL(this.options.baseUri, location.origin);
+        this.baseUrl = joinURL(locationOrigin, this.options.baseUri);
       }
 
-      this.baseUrl = new URL("slidercaptcha", this.baseUrl);
+      this.baseUrl = joinURL(this.baseUrl, "slidercaptcha");
       this.initDOM();
       this.bindEvents();
       this.reset();
@@ -394,29 +433,33 @@
       makeRequest<GenerateResponse>(
         "POST",
         `${this.baseUrl}/generate`,
-        requestBody
-      ).then((response) => {
-        this.toggleSliderStatus(SliderStatus.Ready);
-        this.token = response.Token;
-        loadImage(response.Background, (image) => {
-          this.backgroundCanvasContext.drawImage(
-            image,
-            0,
-            0,
-            image.width,
-            image.height
-          );
-        });
-        loadImage(response.Slice, (image) => {
-          this.sliceCanvasContext.drawImage(
-            image,
-            0,
-            response.Position,
-            image.width,
-            image.height
-          );
-        });
-      });
+        requestBody,
+        (response) => {
+          this.toggleSliderStatus(SliderStatus.Ready);
+          this.token = response.Token;
+          loadImage(response.Background, (image) => {
+            this.backgroundCanvasContext.drawImage(
+              image,
+              0,
+              0,
+              image.width,
+              image.height
+            );
+          });
+          loadImage(response.Slice, (image) => {
+            this.sliceCanvasContext.drawImage(
+              image,
+              0,
+              response.Position,
+              image.width,
+              image.height
+            );
+          });
+        },
+        ({ statusText }) => {
+          console.error(statusText);
+        }
+      );
     };
 
     toggleSliderStatus = (status: SliderStatus) => {
@@ -519,24 +562,28 @@
         makeRequest<ValidateResponse>(
           "POST",
           `${this.baseUrl}/verify`,
-          requestBody
-        ).then((response) => {
-          const sliderStatus = response.IsSuccess
-            ? SliderStatus.Success
-            : SliderStatus.Fail;
-          this.toggleSliderStatus(sliderStatus);
-          setTimeout(() => {
-            if (response.IsSuccess) {
-              if (this.options.callback) {
-                this.options.callback.call(this, response, this);
+          requestBody,
+          (response) => {
+            const sliderStatus = response.IsSuccess
+              ? SliderStatus.Success
+              : SliderStatus.Fail;
+            this.toggleSliderStatus(sliderStatus);
+            setTimeout(() => {
+              if (response.IsSuccess) {
+                if (this.options.callback) {
+                  this.options.callback.call(this, response, this);
+                } else {
+                  console.warn("Missing captcha callback");
+                }
               } else {
-                console.warn("Missing captcha callback");
+                this.reset();
               }
-            } else {
-              this.reset();
-            }
-          }, 1000);
-        });
+            }, 1000);
+          },
+          ({ statusText }) => {
+            console.error(statusText);
+          }
+        );
       };
 
       document.addEventListener(

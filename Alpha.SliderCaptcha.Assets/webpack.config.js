@@ -77,7 +77,7 @@ module.exports = ({ mode }) => {
   };
 
   if (isDev) {
-    config.devtool = "inline-source-map";
+    config.devtool = "eval-cheap-source-map";
     const outputImagesPath = path.resolve(devOutputPath, "images");
     if (!existsSync(outputImagesPath)) {
       config.plugins.push(
