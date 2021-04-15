@@ -32,6 +32,7 @@
     height: number;
     sliderWidth: number;
     sliderHeight: number;
+    hasCloseIcon: boolean;
     callback: CaptchaCallback;
   };
 
@@ -54,6 +55,7 @@
     slider_ready: string;
     slider_fail: string;
     captcha_loading: string;
+    success_message: string;
   };
 
   const langResources: {
@@ -64,18 +66,21 @@
       slider_ready: "Slide to complete the puzzle",
       slider_fail: "Please try again",
       captcha_loading: "Loading ...",
+      success_message: "Verification Succeeded",
     },
     "zh-CN": {
       title: "安全验证",
       slider_ready: "Slide to complete the puzzle",
       slider_fail: "请控制拼图片对齐缺口",
       captcha_loading: "正在载入...",
+      success_message: "Verification Succeeded",
     },
     "zh-TW": {
       title: "安全驗證",
       slider_ready: "Slide to complete the puzzle",
       slider_fail: "請控制拼圖片對齊缺口",
       captcha_loading: "正在載入...",
+      success_message: "Verification Succeeded",
     },
   };
 
@@ -152,6 +157,13 @@
     }
 
     return lang || defaultLang;
+  };
+
+  const createHiddenInput = (name: string): HTMLInputElement => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "hidden");
+    input.setAttribute("name", name);
+    return input;
   };
 
   const createElement = (
@@ -284,11 +296,10 @@
       height: 160,
       sliderWidth: 40,
       sliderHeight: 40,
+      hasCloseIcon: false,
       callback: (_, instance) => {
-        if (instance.element instanceof HTMLInputElement) {
-          instance.cleanup();
-          instance.element.value = instance.token;
-        }
+        instance.cleanup();
+        instance.input.value = instance.token;
       },
     };
 
@@ -296,7 +307,11 @@
     private element: HTMLElement;
     private backgroundCanvas: HTMLCanvasElement;
     private sliceCanvas: HTMLCanvasElement;
+    private input: HTMLInputElement;
+    private message: HTMLElement;
     private container: HTMLElement;
+    private title: HTMLElement;
+    private loading: HTMLElement;
     private refreshIcon: HTMLElement;
     private closeIcon: HTMLElement;
     private sliderContainer: HTMLElement;
@@ -311,6 +326,7 @@
     private token: string | undefined = undefined;
     private langResource: LangResource;
     private baseUrl: string;
+    private hasFailed = false;
 
     get backgroundCanvasContext() {
       return this.backgroundCanvas.getContext("2d");
@@ -354,7 +370,18 @@
     };
 
     initDOM = () => {
-      this.container = document.body.appendChild(
+      const elementClassName = "alpha-slider-captcha";
+      if (!this.element.classList.contains(elementClassName)) {
+        this.element.classList.add(elementClassName);
+      }
+
+      const elementName = this.element.getAttribute("name");
+      if (!elementName) {
+        throw "Missing name";
+      }
+
+      this.input = this.element.appendChild(createHiddenInput(elementName));
+      this.container = this.element.appendChild(
         createElement("div", "captcha-container")
       );
 
@@ -362,7 +389,7 @@
       const captchaHeader = this.container.appendChild(
         createElement("div", "captcha-header")
       );
-      captchaHeader.appendChild(
+      this.title = captchaHeader.appendChild(
         createElement("span", "", this.langResource.title)
       );
       const headerIcons = captchaHeader.appendChild(
@@ -371,9 +398,11 @@
       this.refreshIcon = headerIcons.appendChild(
         createElement("i", "captcha-refresh-icon", refreshSvg)
       );
-      this.closeIcon = headerIcons.appendChild(
-        createElement("i", "captcha-close-icon", closeSvg)
-      );
+      if (this.options.hasCloseIcon) {
+        this.closeIcon = headerIcons.appendChild(
+          createElement("i", "captcha-close-icon", closeSvg)
+        );
+      }
 
       // body
       const captchaBody = this.container.appendChild(
@@ -400,7 +429,7 @@
       loading.appendChild(
         createElement("div", "captcha-loading-icon", loadingSvg)
       );
-      loading.appendChild(
+      this.loading = loading.appendChild(
         createElement("span", "", this.langResource.captcha_loading)
       );
 
@@ -472,6 +501,7 @@
       switch (status) {
         case SliderStatus.Fail:
           sliderSvg = sliderFailSvg;
+          this.hasFailed = true;
           this.sliderText.innerText = this.langResource.slider_fail;
           break;
         case SliderStatus.Success:
@@ -496,9 +526,11 @@
 
         this.reset();
       });
-      this.closeIcon.addEventListener("click", () => {
-        this.cleanup();
-      });
+      if (this.closeIcon) {
+        this.closeIcon.addEventListener("click", () => {
+          this.cleanup();
+        });
+      }
 
       const handleDragStart = (x: number, y: number) => {
         if (
@@ -570,6 +602,13 @@
             this.toggleSliderStatus(sliderStatus);
             setTimeout(() => {
               if (response.IsSuccess) {
+                this.message = this.element.appendChild(
+                  createElement(
+                    "div",
+                    "captcha-message",
+                    this.langResource.success_message
+                  )
+                );
                 if (this.options.callback) {
                   this.options.callback.call(this, response, this);
                 } else {
@@ -601,6 +640,10 @@
       );
     };
 
+    isVerified = () => {
+      return this.sliderStatus === SliderStatus.Success;
+    };
+
     reset = () => {
       const clearCanvasContext = (canvasContext: CanvasRenderingContext2D) => {
         canvasContext.clearRect(0, 0, this.options.width, this.options.height);
@@ -621,6 +664,21 @@
       document.removeEventListener("touchmove", this.documentTouchmove);
       document.removeEventListener("mouseup", this.documentMouseup);
       document.removeEventListener("touchend", this.documentTouchend);
+      this.container = null;
+    };
+
+    changeLanguage = (lang) => {
+      this.options.lang = lang;
+      this.langResource = this.getLangResource();
+      if (this.sliderStatus === SliderStatus.Success) {
+        this.message.innerHTML = this.langResource.success_message;
+      } else if (this.container) {
+        this.title.innerHTML = this.langResource.title;
+        this.loading.innerHTML = this.langResource.captcha_loading;
+        this.sliderText.innerText = this.hasFailed
+          ? this.langResource.slider_fail
+          : this.langResource.slider_ready;
+      }
     };
   }
 

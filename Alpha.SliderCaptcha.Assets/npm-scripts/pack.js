@@ -37,6 +37,6 @@ archive.finalize().then(() => {
   const publishPath = `L:/Users/2.WEB_Team/leo.vo/Alpha.SliderCaptcha/${fileName}`;
   fs.copyFile(filePath, publishPath, (err) => {
     if (err) throw err;
-    console.log("Publish completed");
+    console.log(`Publish completed to: ${publishPath}`);
   });
 });

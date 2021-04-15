@@ -1,152 +1,164 @@
-.captcha-container {
-  padding: 10px 0;
-  width: 320px;
-  box-shadow: 0 0 8px #6c757d;
-  margin: 0 auto;
-  z-index: 2147483647;
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  margin-left: -162px;
-  margin-top: -162px;
-  background: #fff;
+.alpha-slider-captcha {
+  margin: 10px 0;
 
   svg {
     overflow: hidden;
   }
 
-  .captcha-header {
-    height: 32px;
-    line-height: 32px;
-    padding: 0 10px;
-    font-weight: bold;
-
-    .captcha-header-icons {
-      float: right;
-      margin-top: 5px;
-
-      .captcha-refresh-icon {
-        margin-right: 10px;
-        cursor: pointer;
-      }
-
-      .captcha-close-icon {
-        cursor: pointer;
-      }
-    }
+  .captcha-message {
+    color: #18a452;
+    background: #eefff5;
+    border: 1px solid #26c267;
+    padding: 5px;
   }
 
-  .captcha-body {
-    padding: 10px;
+  .captcha-container {
+    width: 320px;
+    padding: 10px 0;
+    border: 1px solid #c4c4c4;
+    // box-shadow: 0 0 8px #6c757d;
+    // margin: 0 auto;
+    // z-index: 2147483647;
+    // position: fixed;
+    // left: 50%;
+    // top: 50%;
+    // margin-left: -162px;
+    // margin-top: -162px;
+    background: #fff;
 
-    .captcha-widget {
+    .captcha-header {
+      height: 32px;
+      line-height: 32px;
+      padding: 0 10px;
+      font-weight: bold;
+
+      .captcha-header-icons {
+        float: right;
+        margin-top: 5px;
+
+        .captcha-refresh-icon {
+          cursor: pointer;
+        }
+
+        .captcha-close-icon {
+          margin-left: 10px;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .captcha-body {
+      padding: 10px;
+
+      .captcha-widget {
+        position: relative;
+
+        canvas.captcha-background {
+          position: absolute;
+        }
+
+        canvas.captcha-slice {
+          position: absolute;
+        }
+
+        .captcha-loading {
+          width: 100%;
+          height: 100%;
+          text-align: center;
+          padding-top: 10%;
+          background: lightgray;
+        }
+      }
+    }
+
+    .captcha-footer {
+      padding: 0 10px;
       position: relative;
 
-      canvas.captcha-background {
-        position: absolute;
-      }
-
-      canvas.captcha-slice {
-        position: absolute;
-      }
-
-      .captcha-loading {
-        width: 100%;
-        height: 100%;
+      .captcha-slider-container {
+        position: relative;
+        border-radius: 2px;
+        background: #f7f9fa;
+        color: #45494c;
         text-align: center;
-        padding-top: 10%;
-        background: lightgray;
-      }
-    }
-  }
+        height: 40px;
+        line-height: 40px;
 
-  .captcha-footer {
-    padding: 0 10px;
-    position: relative;
+        &.captcha-slider-ready {
+          .captcha-slider-mask {
+            display: none;
+          }
+          .captcha-slider-text {
+            display: block;
+          }
+        }
 
-    .captcha-slider-container {
-      position: relative;
-      border-radius: 2px;
-      background: #f7f9fa;
-      color: #45494c;
-      text-align: center;
-      height: 40px;
-      line-height: 40px;
+        &.captcha-slider-move {
+          .captcha-slider-button {
+            cursor: grabbing;
+          }
+        }
 
-      &.captcha-slider-ready {
+        &.captcha-slider-fail {
+          .captcha-slider-mask {
+            border-color: #f57a7a;
+            background: #fce1e1;
+          }
+          .captcha-slider-button {
+            background: #f57a7a !important;
+            border-color: #f57a7a !important;
+          }
+        }
+
+        &.captcha-slider-success {
+          .captcha-slider-mask {
+            border-color: #52ccba;
+            background: #d2f4ef;
+          }
+          .captcha-slider-button {
+            background: #52ccba !important;
+            border-color: #52ccba !important;
+          }
+        }
+
+        &.captcha-slider-loading {
+          .captcha-slider-button {
+            background: #6c757d !important;
+            border-color: #6c757d !important;
+          }
+        }
+
         .captcha-slider-mask {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: #d1e9fe;
+          border-width: 1px;
+          border-style: solid;
+          border-color: #1991fa;
+        }
+
+        .captcha-slider-button {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 40px;
+          height: 40px;
+          border-width: 1px;
+          border-style: solid;
+          border-color: #1991fa;
+          background: #1991fa;
+          color: white;
+          box-shadow: 0 0 3px #eee;
+          cursor: grab;
+          padding-top: 5px;
+        }
+
+        .captcha-slider-text {
           display: none;
         }
-        .captcha-slider-text {
-          display: block;
-        }
-      }
-
-      &.captcha-slider-move {
-        .captcha-slider-button {
-          cursor: grabbing;
-        }
-      }
-
-      &.captcha-slider-fail {
-        .captcha-slider-mask {
-          border-color: #f57a7a;
-          background: #fce1e1;
-        }
-        .captcha-slider-button {
-          background: #f57a7a !important;
-          border-color: #f57a7a !important;
-        }
-      }
-
-      &.captcha-slider-success {
-        .captcha-slider-mask {
-          border-color: #52ccba;
-          background: #d2f4ef;
-        }
-        .captcha-slider-button {
-          background: #52ccba !important;
-          border-color: #52ccba !important;
-        }
-      }
-
-      &.captcha-slider-loading {
-        .captcha-slider-button {
-          background: #6c757d !important;
-          border-color: #6c757d !important;
-        }
-      }
-
-      .captcha-slider-mask {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #d1e9fe;
-        border-width: 1px;
-        border-style: solid;
-        border-color: #1991fa;
-      }
-
-      .captcha-slider-button {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 40px;
-        height: 40px;
-        border-width: 1px;
-        border-style: solid;
-        border-color: #1991fa;
-        background: #1991fa;
-        color: white;
-        box-shadow: 0 0 3px #eee;
-        cursor: grab;
-        padding-top: 5px;
-      }
-
-      .captcha-slider-text {
-        display: none;
       }
     }
   }

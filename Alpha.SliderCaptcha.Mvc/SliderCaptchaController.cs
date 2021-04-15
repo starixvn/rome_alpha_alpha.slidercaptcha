@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
-using Alpha.SliderCaptcha.Models;
 using Alpha.SliderCaptcha.Mvc.Models;
 using Alpha.SliderCaptcha.Services;
 

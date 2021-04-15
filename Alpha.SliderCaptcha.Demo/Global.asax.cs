@@ -14,7 +14,7 @@ namespace Alpha.SliderCaptcha.Demo
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            Configuration.Use(new CaptchaOptions("~/App_Data/slider-captcha", 5));
+            Configuration.Use(new CaptchaOptions("~/App_Data/slider-captcha", 5, 5, 1));
         }
     }
 }

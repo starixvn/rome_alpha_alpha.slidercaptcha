@@ -2,12 +2,10 @@
 {
     public class IndexViewModel
     {
-        public bool IsTokenRequired { get; set; }
-
-        public bool IsVerified { get; set; }
-
         public string Username { get; set; }
 
-        public string Password { get; set; }
+        public string Message { get; set; }
+
+        public bool IsTokenRequired { get; set; }
     }
 }

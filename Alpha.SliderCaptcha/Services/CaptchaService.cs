@@ -28,13 +28,15 @@ namespace Alpha.SliderCaptcha.Services
         private readonly ICacheService cacheService;
         private readonly ITokenService tokenService;
         private readonly IGenerateService generateService;
+        private readonly IHttpContextService httpContextService;
 
-        public CaptchaService(CaptchaOptions captchaOptions, IGenerateService generateService, ICacheService cacheService, ITokenService tokenService)
+        public CaptchaService(CaptchaOptions captchaOptions, IGenerateService generateService, ICacheService cacheService, ITokenService tokenService, IHttpContextService httpContextService)
         {
             this.captchaOptions = captchaOptions ?? throw new ArgumentNullException(nameof(captchaOptions));
             this.generateService = generateService ?? throw new ArgumentNullException(nameof(generateService));
             this.cacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
             this.tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
+            this.httpContextService = httpContextService ?? throw new ArgumentNullException(nameof(httpContextService));
         }
 
         private string GetVerifyingCacheKey(string token)
@@ -53,7 +55,10 @@ namespace Alpha.SliderCaptcha.Services
             using (var model = generateService.Generate())
             {
                 var cacheKey = GetVerifyingCacheKey(token);
-                cacheService.Set(cacheKey, model.Point.X);
+                cacheService.Set(cacheKey, model.Point.X, new CacheItemOptions
+                {
+                    SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.TimeoutMinutes)
+                });
                 var backgroundBase64String = model.Background.ToBase64String();
                 var sliceBase64String = model.Slice.ToBase64String();
                 return new GenerateResult(token, backgroundBase64String, sliceBase64String, model.Point.Y);
@@ -62,11 +67,14 @@ namespace Alpha.SliderCaptcha.Services
 
         public async Task<GenerateResult> GenerateAsync(string token)
         {
-            token = tokenService.IsValid(token) ? token : tokenService.Generate();
+            token = tokenService.Generate();
             using (var model = generateService.Generate())
             {
                 var cacheKey = GetVerifyingCacheKey(token);
-                await cacheService.SetAsync(cacheKey, model.Point.X).ConfigureAwait(false);
+                await cacheService.SetAsync(cacheKey, model.Point.X, new CacheItemOptions
+                {
+                    SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.TimeoutMinutes)
+                }).ConfigureAwait(false);
                 var backgroundBase64String = model.Background.ToBase64String();
                 var sliceBase64String = model.Slice.ToBase64String();
                 return new GenerateResult(token, backgroundBase64String, sliceBase64String, model.Point.Y);
@@ -94,7 +102,12 @@ namespace Alpha.SliderCaptcha.Services
             }
 
             cacheService.Remove(verifyingCacheKey);
-            cacheService.Set(GetVerifiedCacheKey(token), DateTime.UtcNow);
+            cacheService.Set(GetVerifiedCacheKey(token), DateTime.UtcNow, new CacheItemOptions
+            {
+                SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.VerifiedMinutes)
+            });
+
+            httpContextService.SaveCookieToken(token);
             return new VerifyResult(VerifyResult.Correct, "Success");
         }
 
@@ -119,12 +132,18 @@ namespace Alpha.SliderCaptcha.Services
             }
 
             await cacheService.RemoveAsync(verifyingCacheKey).ConfigureAwait(false);
-            await cacheService.SetAsync(GetVerifiedCacheKey(token), DateTime.UtcNow).ConfigureAwait(false);
+            await cacheService.SetAsync(GetVerifiedCacheKey(token), DateTime.UtcNow, new CacheItemOptions
+            {
+                SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.VerifiedMinutes)
+            }).ConfigureAwait(false);
+
+            httpContextService.SaveCookieToken(token);
             return new VerifyResult(VerifyResult.Correct, "Success");
         }
 
         public bool IsVerfied(string token)
         {
+            token = string.IsNullOrEmpty(token) ? httpContextService.TakeCookieToken() : token;
             if (!tokenService.IsValid(token))
             {
                 return false;
@@ -142,6 +161,7 @@ namespace Alpha.SliderCaptcha.Services
 
         public async Task<bool> IsVerifiedAsync(string token)
         {
+            token = string.IsNullOrEmpty(token) ? httpContextService.TakeCookieToken() : token;
             if (!tokenService.IsValid(token))
             {
                 return false;
