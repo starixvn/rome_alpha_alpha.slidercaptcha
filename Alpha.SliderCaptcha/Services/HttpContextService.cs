@@ -42,7 +42,8 @@ namespace Alpha.SliderCaptcha.Services
             var cookie = new HttpCookie(TokenCookieKey)
             {
                 Value = token,
-                Expires = DateTime.Now.AddMinutes(captchaOptions.VerifiedMinutes)
+                Expires = DateTime.Now.AddMinutes(captchaOptions.VerifiedMinutes),
+                Secure = true
             };
             httpContext.Response.Cookies.Add(cookie);
         }

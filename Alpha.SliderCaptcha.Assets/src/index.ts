@@ -33,13 +33,15 @@
     sliderWidth: number;
     sliderHeight: number;
     hasCloseIcon: boolean;
-    callback: CaptchaCallback;
+    callback?: CaptchaCallback;
   };
 
-  type CaptchaCallback = (
-    data: ValidateResponse,
-    captchaInstance: SliderCaptcha
-  ) => void;
+  type CaptchaEvent = {
+    preventDefault: boolean;
+    instance: SliderCaptcha;
+  };
+
+  type CaptchaCallback = (data: ValidateResponse, event: CaptchaEvent) => void;
 
   enum SliderStatus {
     Loading,
@@ -70,21 +72,36 @@
     },
     "zh-CN": {
       title: "安全验证",
-      slider_ready: "Slide to complete the puzzle",
-      slider_fail: "请控制拼图片对齐缺口",
+      slider_ready: "拖动滑块完成拼图",
+      slider_fail: "请重试",
       captcha_loading: "正在载入...",
-      success_message: "Verification Succeeded",
+      success_message: "验证成功",
     },
     "zh-TW": {
       title: "安全驗證",
-      slider_ready: "Slide to complete the puzzle",
-      slider_fail: "請控制拼圖片對齊缺口",
+      slider_ready: "拖動滑塊完成拼圖",
+      slider_fail: "請重試",
       captcha_loading: "正在載入...",
-      success_message: "Verification Succeeded",
+      success_message: "驗證成功",
+    },
+    "vi-VN": {
+      title: "Xác Thực Captcha",
+      slider_ready: "Trượt để hoàn thành bức tranh",
+      slider_fail: "Vui lòng thử lại",
+      captcha_loading: "Đang tải...",
+      success_message: "Xác Thực Thành Công",
+    },
+    "th-TH": {
+      title: "การตรวจสอบเพื่อความปลอดภัย",
+      slider_ready: "เลื่อนเพื่อไขปริศนา",
+      slider_fail: "กรุณาลองอีกครั้ง",
+      captcha_loading: "กำลังเตรียม ...",
+      success_message: "ตรวจสอบสำเร็จแล้ว",
     },
   };
 
   const defaultLang = "en-US";
+  const captchaTimeout = 1_000;
 
   const originalRemove = Element.prototype.remove;
   Element.prototype.remove = function () {
@@ -297,10 +314,6 @@
       sliderWidth: 40,
       sliderHeight: 40,
       hasCloseIcon: false,
-      callback: (_, instance) => {
-        instance.cleanup();
-        instance.input.value = instance.token;
-      },
     };
 
     private options = SliderCaptcha.defaultOptions;
@@ -353,7 +366,6 @@
         this.baseUrl = joinURL(locationOrigin, this.options.baseUri);
       }
 
-      this.baseUrl = joinURL(this.baseUrl, "slidercaptcha");
       this.initDOM();
       this.bindEvents();
       this.reset();
@@ -421,7 +433,7 @@
         )
       );
       this.sliceCanvas = captchaWidget.appendChild(
-        createCanvas(this.options.width, this.options.height, "captcha-slice")
+        createCanvas(40, this.options.height, "captcha-slice")
       );
       const loading = captchaWidget.appendChild(
         createElement("div", "captcha-loading")
@@ -461,7 +473,7 @@
       };
       makeRequest<GenerateResponse>(
         "POST",
-        `${this.baseUrl}/generate`,
+        `${this.baseUrl}/slidercaptcha/generate`,
         requestBody,
         (response) => {
           this.toggleSliderStatus(SliderStatus.Ready);
@@ -554,10 +566,10 @@
 
       const handleDragMove = (x: number, y: number) => {
         if (this.sliderStatus !== SliderStatus.Move) {
-          return;
+          return true;
         }
 
-        console.log(`handleDragMove (x: ${x}, y: ${y})`);
+        // console.log(`handleDragMove (x: ${x}, y: ${y})`);
         const moveX = Math.min(
           Math.max(x - originX, 0),
           this.options.width - this.options.sliderWidth
@@ -565,18 +577,24 @@
         this.sliderButton.style.left = moveX + "px";
         this.sliderMask.style.width = moveX + "px";
         this.sliceCanvas.style.left = moveX + "px";
+        return false;
       };
       document.addEventListener(
         "mousemove",
         (this.documentMousemove = (e) => {
-          handleDragMove(e.clientX, e.clientY);
+          if (!handleDragMove(e.clientX, e.clientY)) {
+            e.stopPropagation();
+          }
         })
       );
       document.addEventListener(
         "touchmove",
         (this.documentTouchmove = (e) => {
-          //console.log("touchmove");
-          handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
+          if (!handleDragMove(e.touches[0].clientX, e.touches[0].clientY)) {
+            console.log("touchmove stopPropagation");
+            e.stopPropagation();
+            e.preventDefault();
+          }
         })
       );
 
@@ -593,31 +611,41 @@
         };
         makeRequest<ValidateResponse>(
           "POST",
-          `${this.baseUrl}/verify`,
+          `${this.baseUrl}/slidercaptcha/verify`,
           requestBody,
           (response) => {
             const sliderStatus = response.IsSuccess
               ? SliderStatus.Success
               : SliderStatus.Fail;
             this.toggleSliderStatus(sliderStatus);
-            setTimeout(() => {
-              if (response.IsSuccess) {
-                this.message = this.element.appendChild(
-                  createElement(
-                    "div",
-                    "captcha-message",
-                    this.langResource.success_message
-                  )
-                );
-                if (this.options.callback) {
-                  this.options.callback.call(this, response, this);
+            if (response.IsSuccess) {
+              this.input.value = this.token;
+              this.message = this.element.appendChild(
+                createElement(
+                  "div",
+                  "captcha-message",
+                  this.langResource.success_message
+                )
+              );
+            }
+
+            const event: CaptchaEvent = {
+              preventDefault: false,
+              instance: this,
+            };
+            if (this.options.callback) {
+              this.options.callback.call(this, response, event);
+            }
+
+            if (!event.preventDefault) {
+              setTimeout(() => {
+                if (response.IsSuccess) {
+                  this.cleanup();
                 } else {
-                  console.warn("Missing captcha callback");
+                  this.reset();
                 }
-              } else {
-                this.reset();
-              }
-            }, 1000);
+              }, captchaTimeout);
+            }
           },
           ({ statusText }) => {
             console.error(statusText);
@@ -628,14 +656,14 @@
       document.addEventListener(
         "mouseup",
         (this.documentMouseup = () => {
-          handleDragEnd();
+          return handleDragEnd();
         })
       );
       document.addEventListener(
         "touchend",
         (this.documentTouchend = (e) => {
           //console.log("touchend");
-          handleDragEnd();
+          return handleDragEnd();
         })
       );
     };
