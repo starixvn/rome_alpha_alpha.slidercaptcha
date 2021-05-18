@@ -33,6 +33,7 @@
     sliderWidth: number;
     sliderHeight: number;
     hasCloseIcon: boolean;
+    topElement: string | HTMLElement;
     callback?: CaptchaCallback;
   };
 
@@ -313,6 +314,7 @@
       height: 160,
       sliderWidth: 40,
       sliderHeight: 40,
+      topElement: document.body,
       hasCloseIcon: false,
     };
 
@@ -340,6 +342,8 @@
     private langResource: LangResource;
     private baseUrl: string;
     private hasFailed = false;
+    private topElement: HTMLElement;
+    private topValue: string;
 
     get backgroundCanvasContext() {
       return this.backgroundCanvas.getContext("2d");
@@ -364,6 +368,12 @@
           .startsWith(this.options.baseUri.toLowerCase())
       ) {
         this.baseUrl = joinURL(locationOrigin, this.options.baseUri);
+      }
+
+      if (typeof this.options.topElement === "string") {
+        this.topElement = document.getElementById(this.options.topElement);
+      } else {
+        this.topElement = this.options.topElement;
       }
 
       this.initDOM();
@@ -553,6 +563,7 @@
         }
 
         console.log("handleDragStart");
+        this.freezeOverflowContainer();
         this.toggleSliderStatus(SliderStatus.Move);
         originX = x;
       };
@@ -560,7 +571,6 @@
         handleDragStart(e.clientX, e.clientY);
       });
       this.sliderButton.addEventListener("touchstart", (e) => {
-        //console.log("touchstart");
         handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
       });
 
@@ -569,7 +579,7 @@
           return true;
         }
 
-        // console.log(`handleDragMove (x: ${x}, y: ${y})`);
+        console.log(`handleDragMove (x: ${x}, y: ${y})`);
         const moveX = Math.min(
           Math.max(x - originX, 0),
           this.options.width - this.options.sliderWidth
@@ -581,21 +591,22 @@
       };
       document.addEventListener(
         "mousemove",
-        (this.documentMousemove = (e) => {
+        (this.documentMousemove = (e: MouseEvent) => {
           if (!handleDragMove(e.clientX, e.clientY)) {
             e.stopPropagation();
+            e.preventDefault();
           }
         })
       );
       document.addEventListener(
         "touchmove",
-        (this.documentTouchmove = (e) => {
+        (this.documentTouchmove = (e: TouchEvent) => {
           if (!handleDragMove(e.touches[0].clientX, e.touches[0].clientY)) {
-            console.log("touchmove stopPropagation");
             e.stopPropagation();
             e.preventDefault();
           }
-        })
+        }),
+        { passive: false }
       );
 
       const handleDragEnd = () => {
@@ -604,6 +615,7 @@
         }
 
         console.log("handleDragEnd");
+        this.unfreezeOverflowContainer();
         this.toggleSliderStatus(SliderStatus.Lock);
         const requestBody: ValidateRequest = {
           Token: this.token,
@@ -662,11 +674,23 @@
       document.addEventListener(
         "touchend",
         (this.documentTouchend = (e) => {
-          //console.log("touchend");
           return handleDragEnd();
         })
       );
     };
+
+    freezeOverflowContainer() {
+      if (this.topElement) {
+        this.topValue = document.body.style.touchAction;
+        this.topElement.style.touchAction = "none";
+      }
+    }
+
+    unfreezeOverflowContainer() {
+      if (this.topElement) {
+        this.topElement.style.touchAction = this.topValue;
+      }
+    }
 
     isVerified = () => {
       return this.sliderStatus === SliderStatus.Success;
