@@ -20,6 +20,7 @@ module.exports = ({ mode }) => {
     output: {
       path: isDev ? devOutputPath : path.resolve(__dirname, "dist"),
       filename: "Scripts/alpha.slider-captcha.js",
+      libraryTarget: 'umd',
     },
     module: {
       rules: [
