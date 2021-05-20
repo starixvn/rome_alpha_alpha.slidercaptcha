@@ -25,7 +25,7 @@ namespace Alpha.SliderCaptcha.Mvc
         [HttpPost]
         public async Task<ActionResult> Verify(VerifyRequestModel model)
         {
-            var result = await captchaService.VerifyAsync(model.Token, model.Position).ConfigureAwait(false);
+            var result = await captchaService.VerifyAsync(model.Token, model.Data).ConfigureAwait(false);
             return Json(new ResponseModel(result.Code, result.Reason));
         }
     }

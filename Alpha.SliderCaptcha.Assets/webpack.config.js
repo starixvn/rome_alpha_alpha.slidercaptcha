@@ -6,25 +6,28 @@ const { existsSync } = require("fs");
 
 module.exports = ({ mode }) => {
   console.debug(`Webpack is running in ${mode} mode`);
-  const devOutputPath = path.resolve(
-    __dirname,
-    "../Alpha.SliderCaptcha.Demo"
-  );
+  const devOutputPath = path.resolve(__dirname, "../Alpha.SliderCaptcha.Demo");
 
   const isDev = mode === "development";
   const config = {
     mode,
     watch: isDev,
     entry: ["./src/index.ts", "./src/index.scss"],
-    target: 'es5',
+    target: "es5",
     output: {
       path: isDev ? devOutputPath : path.resolve(__dirname, "dist"),
       filename: "Scripts/alpha.slider-captcha.js",
-      libraryTarget: 'umd',
+      library: {
+        name: "CaptchaSlider",
+        type: "umd",
+      },
+    },
+    resolve: {
+      extensions: [".tsx", ".ts", ".jsx", "js"],
     },
     module: {
       rules: [
-        { test: /\.tsx?$/, loader: "ts-loader" },
+        { test: /\.ts?$/, loader: "ts-loader" },
         {
           test: /\.(sa|sc)ss$/,
           use: [
@@ -65,11 +68,12 @@ module.exports = ({ mode }) => {
       }),
     ],
     optimization: {
+      minimize: true,
       minimizer: [
         new TerserPlugin({
           terserOptions: {
             compress: {
-              drop_console: true,
+              pure_funcs: ["console.log"],
             },
           },
         }),

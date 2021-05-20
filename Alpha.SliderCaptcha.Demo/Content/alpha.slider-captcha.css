@@ -23,9 +23,6 @@
         margin-top: 5px; }
         .alpha-slider-captcha .captcha-container .captcha-header .captcha-header-icons .captcha-refresh-icon {
           cursor: pointer; }
-        .alpha-slider-captcha .captcha-container .captcha-header .captcha-header-icons .captcha-close-icon {
-          margin-left: 10px;
-          cursor: pointer; }
     .alpha-slider-captcha .captcha-container .captcha-body {
       padding: 10px; }
       .alpha-slider-captcha .captcha-container .captcha-body .captcha-widget {

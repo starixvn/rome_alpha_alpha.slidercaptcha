@@ -12,9 +12,9 @@ namespace Alpha.SliderCaptcha.Services
 
         Task<GenerateResult> GenerateAsync(string token);
 
-        VerifyResult Verify(string token, int position);
+        VerifyResult Verify(string token, string data);
 
-        Task<VerifyResult> VerifyAsync(string token, int position);
+        Task<VerifyResult> VerifyAsync(string token, string data);
 
         bool IsVerfied(string token);
 
@@ -81,7 +81,7 @@ namespace Alpha.SliderCaptcha.Services
             }
         }
 
-        public VerifyResult Verify(string token, int position)
+        public VerifyResult Verify(string token, string data)
         {
             if (!tokenService.IsValid(token))
             {
@@ -93,6 +93,11 @@ namespace Alpha.SliderCaptcha.Services
             if (currentPosition == 0)
             {
                 return new VerifyResult(VerifyResult.Timeout, "Timeout error. Please try again");
+            }
+
+            if (!int.TryParse(data, out var position))
+            {
+                return new VerifyResult(VerifyResult.Incorrect, "Invalid data");
             }
 
             var isSuccess = Math.Abs(currentPosition - position) <= captchaOptions.AcceptRange;
@@ -111,7 +116,7 @@ namespace Alpha.SliderCaptcha.Services
             return new VerifyResult(VerifyResult.Correct, "Success");
         }
 
-        public async Task<VerifyResult> VerifyAsync(string token, int position)
+        public async Task<VerifyResult> VerifyAsync(string token, string data)
         {
             if (!tokenService.IsValid(token))
             {
@@ -123,6 +128,11 @@ namespace Alpha.SliderCaptcha.Services
             if (currentPosition == 0)
             {
                 return new VerifyResult(VerifyResult.Timeout, "Timeout error. Please try again");
+            }
+
+            if (!int.TryParse(data, out var position))
+            {
+                return new VerifyResult(VerifyResult.Incorrect, "Invalid data");
             }
 
             var isSuccess = Math.Abs(currentPosition - position) <= captchaOptions.AcceptRange;

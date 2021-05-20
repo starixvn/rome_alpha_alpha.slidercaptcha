@@ -1,4 +1,4 @@
-namespace SliderCaptcha {
+
   export type GenerateRequest = {
     Token: string;
   };
@@ -79,4 +79,4 @@ namespace SliderCaptcha {
     setStatus: (status: CaptchaStatus) => void;
     getStatus: () => CaptchaStatus;
   };
-}
+

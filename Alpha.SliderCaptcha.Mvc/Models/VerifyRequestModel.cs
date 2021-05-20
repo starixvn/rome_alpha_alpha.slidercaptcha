@@ -4,6 +4,6 @@ namespace Alpha.SliderCaptcha.Mvc.Models
     {
         public string Token { get; set; }
 
-        public int Position { get; set; }
+        public string Data { get; set; }
     }
 }
