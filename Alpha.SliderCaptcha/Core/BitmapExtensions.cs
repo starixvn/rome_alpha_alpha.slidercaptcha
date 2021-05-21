@@ -7,11 +7,11 @@ namespace Alpha.SliderCaptcha.Core
 {
     public static class BitmapExtensions
     {
-        public static string ToBase64String(this Bitmap image)
+        public static string ToBase64String(this Bitmap image, ImageFormat imageFormat)
         {
             using (var stream = new MemoryStream())
             {
-                image.Save(stream, ImageFormat.Jpeg);
+                image.Save(stream, imageFormat);
                 byte[] imageBytes = stream.ToArray();
                 return "data:image/jpg;base64," + Convert.ToBase64String(imageBytes);
             }

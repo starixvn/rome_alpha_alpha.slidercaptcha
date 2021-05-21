@@ -13,6 +13,7 @@ export const langResources: {
     captcha_loading: "Loading ...",
     success_message: "Verification Succeeded",
     verify: "Verify",
+    verify_placeholder: "Input captcha code",
   },
   "zh-CN": {
     title: "安全验证",
@@ -21,6 +22,7 @@ export const langResources: {
     captcha_loading: "正在载入...",
     success_message: "验证成功",
     verify: "Verify",
+    verify_placeholder: "Input captcha code",
   },
   "zh-TW": {
     title: "安全驗證",
@@ -29,6 +31,7 @@ export const langResources: {
     captcha_loading: "正在載入...",
     success_message: "驗證成功",
     verify: "Verify",
+    verify_placeholder: "Input captcha code",
   },
   "vi-VN": {
     title: "Xác Thực Captcha",
@@ -37,6 +40,7 @@ export const langResources: {
     captcha_loading: "Đang tải...",
     success_message: "Xác Thực Thành Công",
     verify: "Verify",
+    verify_placeholder: "Input captcha code",
   },
   "th-TH": {
     title: "การตรวจสอบเพื่อความปลอดภัย",
@@ -45,6 +49,7 @@ export const langResources: {
     captcha_loading: "กำลังเตรียม ...",
     success_message: "ตรวจสอบสำเร็จแล้ว",
     verify: "Verify",
+    verify_placeholder: "Input captcha code",
   },
 };
 

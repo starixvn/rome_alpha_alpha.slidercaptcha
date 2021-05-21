@@ -5,7 +5,12 @@ import {
   sliderSuccessSvg,
 } from "../consts";
 import { CaptchaMediator, CaptchaStatus, ImageCaptchaData } from "../types";
-import { createCanvas, createElement, loadImage } from "../utils";
+import {
+  createCanvas,
+  createElement,
+  loadImage,
+  setClientSize,
+} from "../utils";
 import { BaseCaptcha } from "./base-captcha";
 
 const imageWidth = 300;
@@ -80,8 +85,7 @@ export class ImageCaptcha extends BaseCaptcha {
     const captchaWidget = captchaBody.appendChild(
       createElement("div", "captcha-widget")
     );
-    captchaWidget.style.width = imageWidth + "px";
-    captchaWidget.style.height = imageHeight + "px";
+    setClientSize(captchaWidget, imageWidth, imageHeight);
     this.backgroundCanvas = captchaWidget.appendChild(
       createCanvas(imageWidth, imageHeight, "captcha-background")
     );
@@ -150,12 +154,8 @@ export class ImageCaptcha extends BaseCaptcha {
     });
   };
 
-  private toggleSliderStatus = (status: CaptchaStatus) => {
+  private setStatus = (status: CaptchaStatus) => {
     this.mediator.setStatus(status);
-    const statusClassName = `captcha-slider-${CaptchaStatus[
-      status
-    ].toLowerCase()}`;
-    this.sliderContainer.className = `captcha-slider-container ${statusClassName}`;
     let sliderSvg = sliderReadySvg;
     switch (status) {
       case CaptchaStatus.Fail:
@@ -181,7 +181,7 @@ export class ImageCaptcha extends BaseCaptcha {
 
     console.log("handleDragStart");
     this.freezeOverflowContainer();
-    this.toggleSliderStatus(CaptchaStatus.Move);
+    this.setStatus(CaptchaStatus.Move);
     this.originX = x;
   };
 
@@ -210,14 +210,14 @@ export class ImageCaptcha extends BaseCaptcha {
 
     console.log("handleDragEnd");
     this.unfreezeOverflowContainer();
-    this.toggleSliderStatus(CaptchaStatus.Lock);
+    this.setStatus(CaptchaStatus.Lock);
     this.mediator.validateRequest(
       this.sliceCanvas.offsetLeft.toString(),
       (response) => {
         const sliderStatus = response.IsSuccess
           ? CaptchaStatus.Success
           : CaptchaStatus.Fail;
-        this.toggleSliderStatus(sliderStatus);
+        this.setStatus(sliderStatus);
       }
     );
   };
@@ -245,7 +245,7 @@ export class ImageCaptcha extends BaseCaptcha {
     this.sliderButton.style.left = "0";
     this.sliderMask.style.width = "0";
     this.sliceCanvas.style.left = "0";
-    this.toggleSliderStatus(CaptchaStatus.Loading);
+    this.setStatus(CaptchaStatus.Loading);
     clearCanvasContext(this.backgroundCanvasContext);
     clearCanvasContext(this.sliceCanvasContext);
     this.loadImages();

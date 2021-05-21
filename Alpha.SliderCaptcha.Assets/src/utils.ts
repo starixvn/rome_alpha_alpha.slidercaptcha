@@ -198,3 +198,12 @@ export const getLangResource = (lang: string) => {
 export const getClientWidth = (element: HTMLElement) => {
   return element.clientWidth;
 };
+
+export const setClientSize = (
+  element: HTMLElement,
+  width: number,
+  height: number
+) => {
+  element.style.width = width + "px";
+  element.style.height = height + "px";
+};

@@ -5,7 +5,7 @@ namespace Alpha.SliderCaptcha.TextCaptcha.Models
     public static class CaptchaProfiles
     {
         private static readonly int DefaultWidth = 250;
-        private static readonly int DefaultHeight = 50;
+        private static readonly int DefaultHeight = 60;
         private static readonly Color DefaultBackColor = Color.White;
         private static readonly Color DefaultFontColor = Color.Black;
         private static readonly Color DefaultNoiseColor = Color.Black;

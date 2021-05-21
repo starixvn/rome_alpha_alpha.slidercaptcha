@@ -27,14 +27,13 @@ namespace Alpha.SliderCaptcha.TextCaptcha.Services
 
         private Bitmap Generate(string text, GenerateOptions generateOptions)
         {
-            var captchaImage = new Bitmap(generateOptions.Width, generateOptions.Height, PixelFormat.Format24bppRgb);
+            var imageSize = new Rectangle(0, 0, generateOptions.Width, generateOptions.Height);
+            var captchaImage = new Bitmap(imageSize.Width, imageSize.Height, PixelFormat.Format24bppRgb);
             using (var gr = Graphics.FromImage(captchaImage))
             {
-                gr.SmoothingMode = SmoothingMode.AntiAlias;
-                var rect = new Rectangle(0, 0, generateOptions.Width, generateOptions.Height);
                 using (var br = new SolidBrush(generateOptions.BackColor))
                 {
-                    gr.FillRectangle(br, rect);
+                    gr.FillRectangle(br, imageSize);
                 }
 
                 var charOffset = 0;
@@ -56,8 +55,8 @@ namespace Alpha.SliderCaptcha.TextCaptcha.Services
                     }
                 }
 
-                AddNoise(generateOptions, gr, rect);
-                AddLine(generateOptions, gr, rect);
+                AddNoise(generateOptions, gr, imageSize);
+                AddLine(generateOptions, gr, imageSize);
             }
 
             return captchaImage;

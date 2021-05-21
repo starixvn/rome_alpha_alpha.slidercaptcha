@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using Alpha.SliderCaptcha.Core;
 using Alpha.SliderCaptcha.Core.Models;
 
@@ -47,7 +48,7 @@ namespace Alpha.SliderCaptcha.TextCaptcha.Models
         {
             return new
             {
-                Background = Background.ToBase64String()
+                Background = Background.ToBase64String(ImageFormat.Jpeg)
             };
         }
     }

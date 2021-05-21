@@ -1,5 +1,6 @@
 .alpha-slider-captcha {
-  margin: 10px 0; }
+  margin: 10px 0;
+  display: inline-block; }
   .alpha-slider-captcha svg {
     overflow: hidden; }
   .alpha-slider-captcha .captcha-message {
@@ -8,10 +9,37 @@
     border: 1px solid #26c267;
     padding: 5px; }
   .alpha-slider-captcha .captcha-container {
-    width: 320px;
     padding: 10px 0;
     border: 1px solid #c4c4c4;
     background: #fff; }
+    .alpha-slider-captcha .captcha-container.captcha-style-image .captcha-loading {
+      padding-top: 10%; }
+    .alpha-slider-captcha .captcha-container.captcha-style-text .captcha-verify-input {
+      display: block;
+      width: 100%;
+      margin-bottom: 5px; }
+    .alpha-slider-captcha .captcha-container.captcha-status-ready .captcha-slider-mask {
+      display: none; }
+    .alpha-slider-captcha .captcha-container.captcha-status-ready .captcha-slider-text {
+      display: block; }
+    .alpha-slider-captcha .captcha-container.captcha-status-move .captcha-slider-button {
+      cursor: -webkit-grabbing;
+      cursor: grabbing; }
+    .alpha-slider-captcha .captcha-container.captcha-status-fail .captcha-slider-mask {
+      border-color: #f57a7a;
+      background: #fce1e1; }
+    .alpha-slider-captcha .captcha-container.captcha-status-fail .captcha-container-button {
+      background: #f57a7a !important;
+      border-color: #f57a7a !important; }
+    .alpha-slider-captcha .captcha-container.captcha-status-success .captcha-slider-mask {
+      border-color: #52ccba;
+      background: #d2f4ef; }
+    .alpha-slider-captcha .captcha-container.captcha-status-success .captcha-slider-button {
+      background: #52ccba !important;
+      border-color: #52ccba !important; }
+    .alpha-slider-captcha .captcha-container.captcha-status-loading .captcha-slider-button {
+      background: #6c757d !important;
+      border-color: #6c757d !important; }
     .alpha-slider-captcha .captcha-container .captcha-header {
       height: 32px;
       line-height: 32px;
@@ -35,7 +63,6 @@
           width: 100%;
           height: 100%;
           text-align: center;
-          padding-top: 10%;
           background: lightgray;
           box-sizing: border-box; }
     .alpha-slider-captcha .captcha-container .captcha-footer {
@@ -49,28 +76,6 @@
         text-align: center;
         height: 40px;
         line-height: 40px; }
-        .alpha-slider-captcha .captcha-container .captcha-footer .captcha-slider-container.captcha-slider-ready .captcha-slider-mask {
-          display: none; }
-        .alpha-slider-captcha .captcha-container .captcha-footer .captcha-slider-container.captcha-slider-ready .captcha-slider-text {
-          display: block; }
-        .alpha-slider-captcha .captcha-container .captcha-footer .captcha-slider-container.captcha-slider-move .captcha-slider-button {
-          cursor: -webkit-grabbing;
-          cursor: grabbing; }
-        .alpha-slider-captcha .captcha-container .captcha-footer .captcha-slider-container.captcha-slider-fail .captcha-slider-mask {
-          border-color: #f57a7a;
-          background: #fce1e1; }
-        .alpha-slider-captcha .captcha-container .captcha-footer .captcha-slider-container.captcha-slider-fail .captcha-slider-button {
-          background: #f57a7a !important;
-          border-color: #f57a7a !important; }
-        .alpha-slider-captcha .captcha-container .captcha-footer .captcha-slider-container.captcha-slider-success .captcha-slider-mask {
-          border-color: #52ccba;
-          background: #d2f4ef; }
-        .alpha-slider-captcha .captcha-container .captcha-footer .captcha-slider-container.captcha-slider-success .captcha-slider-button {
-          background: #52ccba !important;
-          border-color: #52ccba !important; }
-        .alpha-slider-captcha .captcha-container .captcha-footer .captcha-slider-container.captcha-slider-loading .captcha-slider-button {
-          background: #6c757d !important;
-          border-color: #6c757d !important; }
         .alpha-slider-captcha .captcha-container .captcha-footer .captcha-slider-container .captcha-slider-mask {
           position: absolute;
           top: 0;
@@ -98,7 +103,4 @@
           cursor: grab;
           padding-top: 5px;
           box-sizing: border-box; }
-        .alpha-slider-captcha .captcha-container .captcha-footer .captcha-slider-container .captcha-slider-text {
-          padding-left: 40px;
-          display: none; }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using Alpha.SliderCaptcha.Core;
 using Alpha.SliderCaptcha.Core.Models;
 
@@ -51,9 +52,9 @@ namespace Alpha.SliderCaptcha.ImageCaptcha.Models
         {
             return new
             {
-                Background = Background.ToBase64String(),
-                Slice = Slice.ToBase64String(),
-                Point = Point.Y
+                Background = Background.ToBase64String(ImageFormat.Jpeg),
+                Slice = Slice.ToBase64String(ImageFormat.Png),
+                Position = Point.Y
             };
         }
     }

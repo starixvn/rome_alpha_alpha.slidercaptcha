@@ -29,7 +29,7 @@ import { BaseCaptcha } from "./base-captcha";
 import { ImageCaptcha } from "./image-captcha";
 import { TextCaptcha } from "./text-captcha";
 
-const ImageCaptchaWidthLimit = 5000;
+const ImageCaptchaWidthLimit = 600;
 
 export class SliderCaptcha implements ISliderCaptcha {
   static defaultOptions: CaptchaOptions = {
@@ -97,10 +97,9 @@ export class SliderCaptcha implements ISliderCaptcha {
     let style = this.options.style;
     if (!style) {
       const width = getClientWidth(this.topElement);
+      console.log(`client width: ${width}`);
       style =
-        width >= ImageCaptchaWidthLimit
-          ? CaptchaStyle.Image
-          : CaptchaStyle.Text;
+        width < ImageCaptchaWidthLimit ? CaptchaStyle.Text : CaptchaStyle.Image;
     }
 
     const mediator: CaptchaMediator = {
@@ -108,7 +107,7 @@ export class SliderCaptcha implements ISliderCaptcha {
       getTopElement: () => this.topElement,
       generateRequest: this.generateRequest,
       validateRequest: this.validateRequest,
-      setStatus: (status) => (this.status = status),
+      setStatus: this.setStatus,
       getStatus: () => this.status,
     };
 
@@ -122,6 +121,17 @@ export class SliderCaptcha implements ISliderCaptcha {
       default:
         throw `Unknown style: ${style}`;
     }
+  };
+
+  private setStatus = (status: CaptchaStatus) => {
+    this.status = status;
+    const statusClassName = `captcha-status-${CaptchaStatus[
+      status
+    ].toLowerCase()}`;
+    const styleClassName = `captcha-style-${CaptchaStyle[
+      this.getStyle()
+    ].toLowerCase()}`;
+    this.containerElement.className = `captcha-container ${statusClassName} ${styleClassName}`;
   };
 
   private initDOM = () => {
@@ -202,7 +212,7 @@ export class SliderCaptcha implements ISliderCaptcha {
       `${this.baseUrl}/slidercaptcha/generate`,
       requestBody,
       (response) => {
-        this.status = CaptchaStatus.Ready;
+        this.setStatus(CaptchaStatus.Ready);
         this.token = response.Token;
         callback(response);
       },

@@ -108,13 +108,13 @@ namespace Alpha.SliderCaptcha.Core.Services
             }
 
             var verifyingCacheKey = GetVerifyingCacheKey(token);
-            var currentPosition = cacheService.Get<int>(verifyingCacheKey);
-            if (currentPosition == 0)
+            var currentData = cacheService.Get<string>(verifyingCacheKey);
+            if (string.IsNullOrEmpty(currentData))
             {
                 return new VerifyResult(VerifyResult.Timeout, "Timeout error. Please try again");
             }
 
-            if (!int.TryParse(data, out var position))
+            if (!int.TryParse(currentData, out var currentPosition) || !int.TryParse(data, out var position))
             {
                 return new VerifyResult(VerifyResult.Incorrect, "Invalid data");
             }
@@ -143,13 +143,13 @@ namespace Alpha.SliderCaptcha.Core.Services
             }
 
             var verifyingCacheKey = GetVerifyingCacheKey(token);
-            var currentPosition = await cacheService.GetAsync<int>(verifyingCacheKey).ConfigureAwait(false);
-            if (currentPosition == 0)
+            var currentData = await cacheService.GetAsync<string>(verifyingCacheKey).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(currentData))
             {
                 return new VerifyResult(VerifyResult.Timeout, "Timeout error. Please try again");
             }
 
-            if (!int.TryParse(data, out var position))
+            if (!int.TryParse(currentData, out var currentPosition) || !int.TryParse(data, out var position))
             {
                 return new VerifyResult(VerifyResult.Incorrect, "Invalid data");
             }

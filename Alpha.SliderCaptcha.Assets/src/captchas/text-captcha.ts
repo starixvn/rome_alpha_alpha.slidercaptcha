@@ -1,13 +1,21 @@
 import { loadingSvg } from "../consts";
-import { CaptchaMediator, TextCaptchaData } from "../types";
-import { createCanvas, createElement, loadImage } from "../utils";
+import { CaptchaMediator, CaptchaStatus, TextCaptchaData } from "../types";
+import {
+  createCanvas,
+  createElement,
+  loadImage,
+  setClientSize,
+} from "../utils";
 import { BaseCaptcha } from "./base-captcha";
 
 const imageWidth = 250;
-const imageHeight = 50;
+const imageHeight = 60;
 
 export class TextCaptcha extends BaseCaptcha {
   private backgroundCanvas: HTMLCanvasElement;
+  private loading: HTMLElement;
+  private input: HTMLInputElement;
+  private button: HTMLElement;
 
   private get backgroundCanvasContext() {
     return this.backgroundCanvas.getContext("2d");
@@ -24,6 +32,7 @@ export class TextCaptcha extends BaseCaptcha {
     const captchaWidget = captchaBody.appendChild(
       createElement("div", "captcha-widget")
     );
+    setClientSize(captchaWidget, imageWidth, imageHeight);
     this.backgroundCanvas = captchaWidget.appendChild(
       createCanvas(imageWidth, imageHeight, "captcha-background")
     );
@@ -33,11 +42,29 @@ export class TextCaptcha extends BaseCaptcha {
     loading.appendChild(
       createElement("div", "captcha-loading-icon", loadingSvg)
     );
+    this.loading = loading.appendChild(
+      createElement("span", "", this.mediator.getLangResource().captcha_loading)
+    );
   };
 
-  initFooter = (captchaFooter: HTMLElement) => {};
+  initFooter = (captchaFooter: HTMLElement) => {
+    const langResource = this.mediator.getLangResource();
+    this.input = captchaFooter.appendChild(
+      createElement("input", "captcha-verify-input")
+    ) as HTMLInputElement;
+    this.input.placeholder = langResource.verify_placeholder;
+    this.button = captchaFooter.appendChild(
+      createElement("button", "captcha-verify-button", langResource.verify)
+    );
+  };
 
   reset = () => {
+    const clearCanvasContext = (canvasContext: CanvasRenderingContext2D) => {
+      canvasContext.clearRect(0, 0, imageWidth, imageHeight);
+    };
+
+    this.mediator.setStatus(CaptchaStatus.Loading);
+    clearCanvasContext(this.backgroundCanvasContext);
     this.loadImages();
   };
 
@@ -54,5 +81,11 @@ export class TextCaptcha extends BaseCaptcha {
         );
       });
     });
+  };
+
+  changeLanguage = () => {
+    const langResource = this.mediator.getLangResource();
+    this.loading.innerHTML = langResource.captcha_loading;
+    this.button.innerHTML = langResource.verify;
   };
 }

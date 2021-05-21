@@ -71,6 +71,7 @@ export type LangResource = {
   captcha_loading: string;
   success_message: string;
   verify: string;
+  verify_placeholder: string;
 };
 
 export interface ISliderCaptcha {
