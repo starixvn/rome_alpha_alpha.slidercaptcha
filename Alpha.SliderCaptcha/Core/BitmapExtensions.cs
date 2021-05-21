@@ -1,8 +1,9 @@
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 
-namespace Alpha.SliderCaptcha.Extensions
+namespace Alpha.SliderCaptcha.Core
 {
     public static class BitmapExtensions
     {
@@ -10,7 +11,7 @@ namespace Alpha.SliderCaptcha.Extensions
         {
             using (var stream = new MemoryStream())
             {
-                image.Save(stream, image.RawFormat);
+                image.Save(stream, ImageFormat.Jpeg);
                 byte[] imageBytes = stream.ToArray();
                 return "data:image/jpg;base64," + Convert.ToBase64String(imageBytes);
             }

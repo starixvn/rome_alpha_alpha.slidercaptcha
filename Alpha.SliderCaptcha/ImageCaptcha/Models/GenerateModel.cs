@@ -1,9 +1,11 @@
 using System;
 using System.Drawing;
+using Alpha.SliderCaptcha.Core;
+using Alpha.SliderCaptcha.Core.Models;
 
-namespace Alpha.SliderCaptcha.Models
+namespace Alpha.SliderCaptcha.ImageCaptcha.Models
 {
-    public class GenerateModel : IDisposable
+    public class GenerateModel : IGenerateModel
     {
         bool disposed = false;
 
@@ -38,6 +40,21 @@ namespace Alpha.SliderCaptcha.Models
             }
 
             disposed = true;
+        }
+
+        public string GetKey()
+        {
+            return Point.X.ToString();
+        }
+
+        public object GetData()
+        {
+            return new
+            {
+                Background = Background.ToBase64String(),
+                Slice = Slice.ToBase64String(),
+                Point = Point.Y
+            };
         }
     }
 }

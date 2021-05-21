@@ -1,6 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
-using Alpha.SliderCaptcha.Services;
+using Alpha.SliderCaptcha.Core.Services;
+using Alpha.SliderCaptcha.ImageCaptcha.Services;
 using Fanex.Caching;
 
 namespace Alpha.SliderCaptcha.Mvc
@@ -10,8 +11,6 @@ namespace Alpha.SliderCaptcha.Mvc
         ICaptchaService CaptchaService { get; }
 
         IFileProvider FileProvider { get; }
-
-        IGenerateService GenerateService { get; }
 
         IRandomService RandomService { get; }
 
@@ -26,7 +25,9 @@ namespace Alpha.SliderCaptcha.Mvc
     {
         private IFileProvider fileProvider;
 
-        public virtual ICaptchaService CaptchaService => DependencyResolver.Current.GetService(typeof(ICaptchaService)) as ICaptchaService ?? new CaptchaService(Configuration.CaptchaOptions, GenerateService, CacheService, TokenService, HttpContextService);
+        public virtual ICaptchaService CaptchaService =>
+            DependencyResolver.Current.GetService(typeof(ICaptchaService)) as ICaptchaService ??
+            new CaptchaService(Configuration.CaptchaOptions, CacheService, TokenService, HttpContextService, RandomService, FileProvider);
 
         public virtual IFileProvider FileProvider
         {
@@ -40,8 +41,6 @@ namespace Alpha.SliderCaptcha.Mvc
                 return fileProvider;
             }
         }
-
-        public virtual IGenerateService GenerateService => DependencyResolver.Current.GetService(typeof(IGenerateService)) as IGenerateService ?? new GenerateService(RandomService, FileProvider);
 
         public virtual IRandomService RandomService => DependencyResolver.Current.GetService(typeof(IRandomService)) as IRandomService ?? new RandomService();
 

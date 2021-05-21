@@ -1,7 +1,7 @@
 using System.Drawing;
 using System.IO;
 
-namespace Alpha.SliderCaptcha.Services
+namespace Alpha.SliderCaptcha.ImageCaptcha.Services
 {
     public interface IImageProvider
     {

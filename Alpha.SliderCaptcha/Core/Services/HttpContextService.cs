@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web;
 
-namespace Alpha.SliderCaptcha.Services
+namespace Alpha.SliderCaptcha.Core.Services
 {
     public interface IHttpContextService
     {

@@ -4,12 +4,12 @@ import {
   sliderReadySvg,
   sliderSuccessSvg,
 } from "../consts";
-import { CaptchaMediator, CaptchaStatus } from "../types";
+import { CaptchaMediator, CaptchaStatus, ImageCaptchaData } from "../types";
 import { createCanvas, createElement, loadImage } from "../utils";
 import { BaseCaptcha } from "./base-captcha";
 
-const imageCaptchaWidth = 300;
-const imageCaptchaHeight = 160;
+const imageWidth = 300;
+const imageHeight = 160;
 const sliderWidth = 40;
 
 export class ImageCaptcha extends BaseCaptcha {
@@ -80,13 +80,13 @@ export class ImageCaptcha extends BaseCaptcha {
     const captchaWidget = captchaBody.appendChild(
       createElement("div", "captcha-widget")
     );
-    captchaWidget.style.width = imageCaptchaWidth + "px";
-    captchaWidget.style.height = imageCaptchaHeight + "px";
+    captchaWidget.style.width = imageWidth + "px";
+    captchaWidget.style.height = imageHeight + "px";
     this.backgroundCanvas = captchaWidget.appendChild(
-      createCanvas(imageCaptchaWidth, imageCaptchaHeight, "captcha-background")
+      createCanvas(imageWidth, imageHeight, "captcha-background")
     );
     this.sliceCanvas = captchaWidget.appendChild(
-      createCanvas(sliderWidth, imageCaptchaHeight, "captcha-slice")
+      createCanvas(sliderWidth, imageHeight, "captcha-slice")
     );
     const loading = captchaWidget.appendChild(
       createElement("div", "captcha-loading")
@@ -128,8 +128,8 @@ export class ImageCaptcha extends BaseCaptcha {
 
   private loadImages = () => {
     this.mediator.generateRequest((response) => {
-      this.toggleSliderStatus(CaptchaStatus.Ready);
-      loadImage(response.Background, (image) => {
+      const data = response.Data as ImageCaptchaData;
+      loadImage(data.Background, (image) => {
         this.backgroundCanvasContext.drawImage(
           image,
           0,
@@ -138,11 +138,11 @@ export class ImageCaptcha extends BaseCaptcha {
           image.height
         );
       });
-      loadImage(response.Slice, (image) => {
+      loadImage(data.Slice, (image) => {
         this.sliceCanvasContext.drawImage(
           image,
           0,
-          response.Position,
+          data.Position,
           image.width,
           image.height
         );
@@ -194,7 +194,7 @@ export class ImageCaptcha extends BaseCaptcha {
     console.log(`handleDragMove (x: ${x}, y: ${y})`);
     const moveX = Math.min(
       Math.max(x - this.originX, 0),
-      imageCaptchaWidth - sliderWidth
+      imageWidth - sliderWidth
     );
     this.sliderButton.style.left = moveX + "px";
     this.sliderMask.style.width = moveX + "px";
@@ -239,7 +239,7 @@ export class ImageCaptcha extends BaseCaptcha {
 
   reset = () => {
     const clearCanvasContext = (canvasContext: CanvasRenderingContext2D) => {
-      canvasContext.clearRect(0, 0, imageCaptchaWidth, imageCaptchaHeight);
+      canvasContext.clearRect(0, 0, imageWidth, imageHeight);
     };
 
     this.sliderButton.style.left = "0";

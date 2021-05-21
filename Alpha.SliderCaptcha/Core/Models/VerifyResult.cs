@@ -1,4 +1,4 @@
-namespace Alpha.SliderCaptcha.Models
+namespace Alpha.SliderCaptcha.Core.Models
 {
     public class VerifyResult
     {

@@ -1,8 +1,10 @@
 using System;
 using System.IO;
 using System.Web;
+using Alpha.SliderCaptcha.Core;
+using Alpha.SliderCaptcha.Core.Services;
 
-namespace Alpha.SliderCaptcha.Services
+namespace Alpha.SliderCaptcha.ImageCaptcha.Services
 {
     public interface IFileProvider
     {

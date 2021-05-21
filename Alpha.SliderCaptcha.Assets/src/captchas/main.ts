@@ -29,7 +29,7 @@ import { BaseCaptcha } from "./base-captcha";
 import { ImageCaptcha } from "./image-captcha";
 import { TextCaptcha } from "./text-captcha";
 
-const ImageCaptchaWidthLimit = 500;
+const ImageCaptchaWidthLimit = 5000;
 
 export class SliderCaptcha implements ISliderCaptcha {
   static defaultOptions: CaptchaOptions = {
@@ -195,12 +195,14 @@ export class SliderCaptcha implements ISliderCaptcha {
   private generateRequest = (callback: GenerateResponseCallback) => {
     const requestBody: GenerateRequest = {
       Token: this.token,
+      Style: this.getStyle(),
     };
     makeRequest<GenerateResponse>(
       "POST",
       `${this.baseUrl}/slidercaptcha/generate`,
       requestBody,
       (response) => {
+        this.status = CaptchaStatus.Ready;
         this.token = response.Token;
         callback(response);
       },
@@ -268,4 +270,10 @@ export class SliderCaptcha implements ISliderCaptcha {
     this.messageElement.innerHTML = this.langResource.success_message;
     this.captcha.changeLanguage();
   };
+
+  getStyle(): CaptchaStyle {
+    return this.captcha instanceof ImageCaptcha
+      ? CaptchaStyle.Image
+      : CaptchaStyle.Text;
+  }
 }

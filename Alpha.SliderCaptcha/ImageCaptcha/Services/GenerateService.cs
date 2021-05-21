@@ -1,15 +1,12 @@
 using System;
 using System.Drawing;
-using Alpha.SliderCaptcha.Extensions;
-using Alpha.SliderCaptcha.Models;
+using Alpha.SliderCaptcha.Core;
+using Alpha.SliderCaptcha.Core.Models;
+using Alpha.SliderCaptcha.Core.Services;
+using Alpha.SliderCaptcha.ImageCaptcha.Models;
 
-namespace Alpha.SliderCaptcha.Services
+namespace Alpha.SliderCaptcha.ImageCaptcha.Services
 {
-    public interface IGenerateService
-    {
-        GenerateModel Generate();
-    }
-
     public class GenerateService : IGenerateService
     {
         private readonly IRandomService randomService;
@@ -21,7 +18,7 @@ namespace Alpha.SliderCaptcha.Services
             this.fileProvider = fileProvider ?? throw new ArgumentNullException(nameof(fileProvider));
         }
 
-        public GenerateModel Generate()
+        public IGenerateModel Generate()
         {
             var imageProvider = fileProvider.CreateImageProvider();
             var background = imageProvider.LoadBackground();

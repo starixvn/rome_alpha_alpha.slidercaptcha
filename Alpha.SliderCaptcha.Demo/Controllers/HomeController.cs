@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Alpha.SliderCaptcha.Core.Services;
 using Alpha.SliderCaptcha.Demo.Models;
 using Alpha.SliderCaptcha.Mvc;
-using Alpha.SliderCaptcha.Services;
 using Fanex.Caching;
 
 namespace Alpha.SliderCaptcha.Demo.Controllers

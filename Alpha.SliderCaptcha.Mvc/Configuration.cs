@@ -1,5 +1,4 @@
-using Alpha.SliderCaptcha.Models;
-using Alpha.SliderCaptcha.Services;
+using Alpha.SliderCaptcha.Core;
 
 namespace Alpha.SliderCaptcha.Mvc
 {

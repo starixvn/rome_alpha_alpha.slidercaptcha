@@ -99,5 +99,6 @@
           padding-top: 5px;
           box-sizing: border-box; }
         .alpha-slider-captcha .captcha-container .captcha-footer .captcha-slider-container .captcha-slider-text {
+          padding-left: 40px;
           display: none; }
 

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Alpha.SliderCaptcha
+namespace Alpha.SliderCaptcha.Core
 {
     public class CaptchaOptions
     {

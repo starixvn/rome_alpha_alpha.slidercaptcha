@@ -1,16 +1,16 @@
 using System;
 using System.Threading.Tasks;
-using Alpha.SliderCaptcha.Extensions;
-using Alpha.SliderCaptcha.Models;
+using Alpha.SliderCaptcha.Core.Models;
+using Alpha.SliderCaptcha.ImageCaptcha.Services;
 using Fanex.Caching;
 
-namespace Alpha.SliderCaptcha.Services
+namespace Alpha.SliderCaptcha.Core.Services
 {
     public interface ICaptchaService
     {
-        GenerateResult Generate(string token);
+        GenerateResult Generate(string token, CaptchaStyle style);
 
-        Task<GenerateResult> GenerateAsync(string token);
+        Task<GenerateResult> GenerateAsync(string token, CaptchaStyle style);
 
         VerifyResult Verify(string token, string data);
 
@@ -27,16 +27,24 @@ namespace Alpha.SliderCaptcha.Services
         private readonly CaptchaOptions captchaOptions;
         private readonly ICacheService cacheService;
         private readonly ITokenService tokenService;
-        private readonly IGenerateService generateService;
         private readonly IHttpContextService httpContextService;
+        private readonly IRandomService randomService;
+        private readonly IFileProvider fileProvider;
 
-        public CaptchaService(CaptchaOptions captchaOptions, IGenerateService generateService, ICacheService cacheService, ITokenService tokenService, IHttpContextService httpContextService)
+        public CaptchaService(
+            CaptchaOptions captchaOptions,
+            ICacheService cacheService,
+            ITokenService tokenService,
+            IHttpContextService httpContextService,
+            IRandomService randomService,
+            IFileProvider fileProvider)
         {
             this.captchaOptions = captchaOptions ?? throw new ArgumentNullException(nameof(captchaOptions));
-            this.generateService = generateService ?? throw new ArgumentNullException(nameof(generateService));
             this.cacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
             this.tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
             this.httpContextService = httpContextService ?? throw new ArgumentNullException(nameof(httpContextService));
+            this.randomService = randomService ?? throw new ArgumentNullException(nameof(randomService));
+            this.fileProvider = fileProvider ?? throw new ArgumentNullException(nameof(fileProvider));
         }
 
         private string GetVerifyingCacheKey(string token)
@@ -49,35 +57,46 @@ namespace Alpha.SliderCaptcha.Services
             return $"{CachePrefix}_{token}_Verified";
         }
 
-        public GenerateResult Generate(string token)
+        private IGenerateService GetGenerateService(CaptchaStyle style)
         {
-            token = tokenService.IsValid(token) ? token : tokenService.Generate();
-            using (var model = generateService.Generate())
+            switch (style)
             {
-                var cacheKey = GetVerifyingCacheKey(token);
-                cacheService.Set(cacheKey, model.Point.X, new CacheItemOptions
-                {
-                    SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.TimeoutMinutes)
-                });
-                var backgroundBase64String = model.Background.ToBase64String();
-                var sliceBase64String = model.Slice.ToBase64String();
-                return new GenerateResult(token, backgroundBase64String, sliceBase64String, model.Point.Y);
+                case CaptchaStyle.Image:
+                    return new GenerateService(randomService, fileProvider);
+                case CaptchaStyle.Text:
+                    return new TextCaptcha.Services.GenerateService(randomService);
+                default:
+                    throw new NotImplementedException(nameof(style));
             }
         }
 
-        public async Task<GenerateResult> GenerateAsync(string token)
+        public GenerateResult Generate(string token, CaptchaStyle style)
         {
-            token = tokenService.Generate();
+            token = tokenService.IsValid(token) ? token : tokenService.Generate();
+            var generateService = GetGenerateService(style);
             using (var model = generateService.Generate())
             {
                 var cacheKey = GetVerifyingCacheKey(token);
-                await cacheService.SetAsync(cacheKey, model.Point.X, new CacheItemOptions
+                cacheService.Set(cacheKey, model.GetKey(), new CacheItemOptions
+                {
+                    SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.TimeoutMinutes)
+                });
+                return new GenerateResult(token, model.GetData());
+            }
+        }
+
+        public async Task<GenerateResult> GenerateAsync(string token, CaptchaStyle style)
+        {
+            token = tokenService.Generate();
+            var generateService = GetGenerateService(style);
+            using (var model = generateService.Generate())
+            {
+                var cacheKey = GetVerifyingCacheKey(token);
+                await cacheService.SetAsync(cacheKey, model.GetKey(), new CacheItemOptions
                 {
                     SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.TimeoutMinutes)
                 }).ConfigureAwait(false);
-                var backgroundBase64String = model.Background.ToBase64String();
-                var sliceBase64String = model.Slice.ToBase64String();
-                return new GenerateResult(token, backgroundBase64String, sliceBase64String, model.Point.Y);
+                return new GenerateResult(token, model.GetData());
             }
         }
 

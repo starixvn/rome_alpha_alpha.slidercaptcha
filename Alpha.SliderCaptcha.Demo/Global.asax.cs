@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Alpha.SliderCaptcha.Core;
 using Alpha.SliderCaptcha.Mvc;
 
 namespace Alpha.SliderCaptcha.Demo
