@@ -4,8 +4,8 @@ namespace Alpha.SliderCaptcha.Core.Models
 {
     public interface IGenerateModel: IDisposable
     {
-        string GetKey();
+        string GetCacheData();
 
-        object GetData();
+        object GetResponseData();
     }
 }

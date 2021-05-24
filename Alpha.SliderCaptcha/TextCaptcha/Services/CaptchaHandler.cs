@@ -8,13 +8,18 @@ using Alpha.SliderCaptcha.TextCaptcha.Models;
 
 namespace Alpha.SliderCaptcha.TextCaptcha.Services
 {
-    public class GenerateService : IGenerateService
+    public class CaptchaHandler : ICaptchaHandler
     {
         private readonly IRandomService randomService;
 
-        public GenerateService(IRandomService randomService)
+        public CaptchaHandler(IRandomService randomService)
         {
             this.randomService = randomService ?? throw new ArgumentNullException(nameof(randomService));
+        }
+
+        public int Validate(string input, string expected)
+        {
+            return string.Compare(input, expected, true) == 0 ? VerifyResult.Correct : VerifyResult.Incorrect;
         }
 
         public IGenerateModel Generate()

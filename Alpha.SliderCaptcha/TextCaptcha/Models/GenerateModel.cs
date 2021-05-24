@@ -39,12 +39,12 @@ namespace Alpha.SliderCaptcha.TextCaptcha.Models
             disposed = true;
         }
 
-        public string GetKey()
+        public string GetCacheData()
         {
             return Text;
         }
 
-        public object GetData()
+        public object GetResponseData()
         {
             return new
             {

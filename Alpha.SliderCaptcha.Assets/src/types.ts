@@ -30,7 +30,6 @@ export type ValidateResponseCallback = (response: ValidateResponse) => void;
 export type ValidateResponse = {
   Code: number;
   Message: string;
-  IsSuccess: boolean;
 };
 
 export type CaptchaOptions = {
@@ -67,15 +66,15 @@ export enum CaptchaStyle {
 export type LangResource = {
   title: string;
   slider_ready: string;
-  slider_fail: string;
   captcha_loading: string;
+  fail_message: string;
   success_message: string;
   verify: string;
   verify_placeholder: string;
 };
 
 export interface ISliderCaptcha {
-  reset: () => void;
+  reset: (force: boolean) => void;
   cleanup: () => void;
   changeLanguage: (lang: string) => void;
 }
@@ -87,4 +86,5 @@ export type CaptchaMediator = {
   validateRequest: (data: string, callback: ValidateResponseCallback) => void;
   setStatus: (status: CaptchaStatus) => void;
   getStatus: () => CaptchaStatus;
+  showMessage: (message: string) => void;
 };

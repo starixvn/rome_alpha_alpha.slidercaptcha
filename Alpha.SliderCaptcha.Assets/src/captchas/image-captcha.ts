@@ -105,7 +105,7 @@ export class ImageCaptcha extends BaseCaptcha {
 
   initFooter = (captchaFooter: HTMLElement) => {
     this.sliderContainer = captchaFooter.appendChild(
-      createElement("div", "captcha-slider-container captcha-slider-ready")
+      createElement("div", "captcha-slider-container")
     );
     this.sliderText = this.sliderContainer.appendChild(
       createElement("span", "captcha-slider-text")
@@ -156,12 +156,17 @@ export class ImageCaptcha extends BaseCaptcha {
 
   private setStatus = (status: CaptchaStatus) => {
     this.mediator.setStatus(status);
+    this.statusChanged(status);
+  };
+
+  statusChanged = (status: CaptchaStatus) => {
     let sliderSvg = sliderReadySvg;
     switch (status) {
       case CaptchaStatus.Fail:
         sliderSvg = sliderFailSvg;
         this.hasFailed = true;
-        this.sliderText.innerHTML = this.mediator.getLangResource().slider_fail;
+        this.sliderText.innerHTML =
+          this.mediator.getLangResource().fail_message;
         break;
       case CaptchaStatus.Success:
         sliderSvg = sliderSuccessSvg;
@@ -210,14 +215,11 @@ export class ImageCaptcha extends BaseCaptcha {
 
     console.log("handleDragEnd");
     this.unfreezeOverflowContainer();
-    this.setStatus(CaptchaStatus.Lock);
     this.mediator.validateRequest(
       this.sliceCanvas.offsetLeft.toString(),
-      (response) => {
-        const sliderStatus = response.IsSuccess
-          ? CaptchaStatus.Success
-          : CaptchaStatus.Fail;
-        this.setStatus(sliderStatus);
+      () => {
+        const status = this.mediator.getStatus();
+        this.statusChanged(status);
       }
     );
   };
@@ -262,7 +264,7 @@ export class ImageCaptcha extends BaseCaptcha {
     const langResource = this.mediator.getLangResource();
     this.loading.innerHTML = langResource.captcha_loading;
     this.sliderText.innerHTML = this.hasFailed
-      ? langResource.slider_fail
+      ? langResource.fail_message
       : langResource.slider_ready;
   };
 }

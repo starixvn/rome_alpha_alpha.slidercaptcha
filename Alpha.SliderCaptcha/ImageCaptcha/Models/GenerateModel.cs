@@ -43,12 +43,12 @@ namespace Alpha.SliderCaptcha.ImageCaptcha.Models
             disposed = true;
         }
 
-        public string GetKey()
+        public string GetCacheData()
         {
             return Point.X.ToString();
         }
 
-        public object GetData()
+        public object GetResponseData()
         {
             return new
             {

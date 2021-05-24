@@ -8,8 +8,6 @@ namespace Alpha.SliderCaptcha.Mvc.Models
 
         public string Message { get; }
 
-        public bool IsSuccess => Code == SuccessCode;
-
         public ResponseModel(int code, string message)
         {
             Code = code;

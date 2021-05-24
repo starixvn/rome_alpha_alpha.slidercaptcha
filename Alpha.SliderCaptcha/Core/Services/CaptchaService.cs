@@ -57,14 +57,14 @@ namespace Alpha.SliderCaptcha.Core.Services
             return $"{CachePrefix}_{token}_Verified";
         }
 
-        private IGenerateService GetGenerateService(CaptchaStyle style)
+        private ICaptchaHandler GetCaptchaHandler(CaptchaStyle style)
         {
             switch (style)
             {
                 case CaptchaStyle.Image:
-                    return new GenerateService(randomService, fileProvider);
+                    return new CaptchaHandler(captchaOptions, randomService, fileProvider);
                 case CaptchaStyle.Text:
-                    return new TextCaptcha.Services.GenerateService(randomService);
+                    return new TextCaptcha.Services.CaptchaHandler(randomService);
                 default:
                     throw new NotImplementedException(nameof(style));
             }
@@ -72,31 +72,49 @@ namespace Alpha.SliderCaptcha.Core.Services
 
         public GenerateResult Generate(string token, CaptchaStyle style)
         {
-            token = tokenService.IsValid(token) ? token : tokenService.Generate();
-            var generateService = GetGenerateService(style);
+            if (!tokenService.IsValid(token))
+            {
+                token = tokenService.Generate();
+            }
+
+            var generateService = GetCaptchaHandler(style);
             using (var model = generateService.Generate())
             {
                 var cacheKey = GetVerifyingCacheKey(token);
-                cacheService.Set(cacheKey, model.GetKey(), new CacheItemOptions
+                var cacheData = new CacheData
                 {
-                    SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.TimeoutMinutes)
+                    Style = (byte)style,
+                    Data = model.GetCacheData()
+                };
+                cacheService.Set(cacheKey, cacheData, new CacheItemOptions
+                {
+                    RelativeExpiration = TimeSpan.FromMinutes(captchaOptions.TimeoutMinutes)
                 });
-                return new GenerateResult(token, model.GetData());
+                return new GenerateResult(token, model.GetResponseData());
             }
         }
 
         public async Task<GenerateResult> GenerateAsync(string token, CaptchaStyle style)
         {
-            token = tokenService.Generate();
-            var generateService = GetGenerateService(style);
-            using (var model = generateService.Generate())
+            if (!tokenService.IsValid(token))
+            {
+                token = tokenService.Generate();
+            }
+
+            var captchaHandler = GetCaptchaHandler(style);
+            using (var model = captchaHandler.Generate())
             {
                 var cacheKey = GetVerifyingCacheKey(token);
-                await cacheService.SetAsync(cacheKey, model.GetKey(), new CacheItemOptions
+                var cacheData = new CacheData
                 {
-                    SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.TimeoutMinutes)
+                    Style = (byte)style,
+                    Data = model.GetCacheData()
+                };
+                await cacheService.SetAsync(cacheKey, cacheData, new CacheItemOptions
+                {
+                    RelativeExpiration = TimeSpan.FromMinutes(captchaOptions.TimeoutMinutes)
                 }).ConfigureAwait(false);
-                return new GenerateResult(token, model.GetData());
+                return new GenerateResult(token, model.GetResponseData());
             }
         }
 
@@ -108,21 +126,17 @@ namespace Alpha.SliderCaptcha.Core.Services
             }
 
             var verifyingCacheKey = GetVerifyingCacheKey(token);
-            var currentData = cacheService.Get<string>(verifyingCacheKey);
-            if (string.IsNullOrEmpty(currentData))
+            var cacheData = cacheService.Get<CacheData>(verifyingCacheKey);
+            if (cacheData == null)
             {
                 return new VerifyResult(VerifyResult.Timeout, "Timeout error. Please try again");
             }
 
-            if (!int.TryParse(currentData, out var currentPosition) || !int.TryParse(data, out var position))
+            var captchaHandler = GetCaptchaHandler((CaptchaStyle)cacheData.Style);
+            var verifyCode = captchaHandler.Validate(data, cacheData.Data);
+            if (verifyCode != VerifyResult.Correct)
             {
-                return new VerifyResult(VerifyResult.Incorrect, "Invalid data");
-            }
-
-            var isSuccess = Math.Abs(currentPosition - position) <= captchaOptions.AcceptRange;
-            if (!isSuccess)
-            {
-                return new VerifyResult(VerifyResult.Incorrect, "Incorrect. Please try again");
+                return new VerifyResult(VerifyResult.Incorrect, "Incorrect");
             }
 
             cacheService.Remove(verifyingCacheKey);
@@ -143,28 +157,24 @@ namespace Alpha.SliderCaptcha.Core.Services
             }
 
             var verifyingCacheKey = GetVerifyingCacheKey(token);
-            var currentData = await cacheService.GetAsync<string>(verifyingCacheKey).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(currentData))
+            var cacheData = await cacheService.GetAsync<CacheData>(verifyingCacheKey).ConfigureAwait(false);
+            if (cacheData == null)
             {
                 return new VerifyResult(VerifyResult.Timeout, "Timeout error. Please try again");
             }
 
-            if (!int.TryParse(currentData, out var currentPosition) || !int.TryParse(data, out var position))
+            var captchaHandler = GetCaptchaHandler((CaptchaStyle)cacheData.Style);
+            var verifyCode = captchaHandler.Validate(data, cacheData.Data);
+            if (verifyCode != VerifyResult.Correct)
             {
-                return new VerifyResult(VerifyResult.Incorrect, "Invalid data");
+                return new VerifyResult(VerifyResult.Incorrect, "Incorrect");
             }
 
-            var isSuccess = Math.Abs(currentPosition - position) <= captchaOptions.AcceptRange;
-            if (!isSuccess)
-            {
-                return new VerifyResult(VerifyResult.Incorrect, "Incorrect. Please try again");
-            }
-
-            await cacheService.RemoveAsync(verifyingCacheKey).ConfigureAwait(false);
-            await cacheService.SetAsync(GetVerifiedCacheKey(token), DateTime.UtcNow, new CacheItemOptions
+            cacheService.Remove(verifyingCacheKey);
+            cacheService.Set(GetVerifiedCacheKey(token), DateTime.UtcNow, new CacheItemOptions
             {
                 SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.VerifiedMinutes)
-            }).ConfigureAwait(false);
+            });
 
             httpContextService.SaveCookieToken(token);
             return new VerifyResult(VerifyResult.Correct, "Success");

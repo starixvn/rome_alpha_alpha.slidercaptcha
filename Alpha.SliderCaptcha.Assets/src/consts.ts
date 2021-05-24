@@ -9,7 +9,7 @@ export const langResources: {
   "en-US": {
     title: "Security/Safety Verification",
     slider_ready: "Slide to complete the puzzle",
-    slider_fail: "Please try again",
+    fail_message: "Please try again",
     captcha_loading: "Loading ...",
     success_message: "Verification Succeeded",
     verify: "Verify",
@@ -18,7 +18,7 @@ export const langResources: {
   "zh-CN": {
     title: "安全验证",
     slider_ready: "拖动滑块完成拼图",
-    slider_fail: "请重试",
+    fail_message: "请重试",
     captcha_loading: "正在载入...",
     success_message: "验证成功",
     verify: "Verify",
@@ -27,7 +27,7 @@ export const langResources: {
   "zh-TW": {
     title: "安全驗證",
     slider_ready: "拖動滑塊完成拼圖",
-    slider_fail: "請重試",
+    fail_message: "請重試",
     captcha_loading: "正在載入...",
     success_message: "驗證成功",
     verify: "Verify",
@@ -36,7 +36,7 @@ export const langResources: {
   "vi-VN": {
     title: "Xác Thực Captcha",
     slider_ready: "Trượt để hoàn thành bức tranh",
-    slider_fail: "Vui lòng thử lại",
+    fail_message: "Vui lòng thử lại",
     captcha_loading: "Đang tải...",
     success_message: "Xác Thực Thành Công",
     verify: "Verify",
@@ -45,7 +45,7 @@ export const langResources: {
   "th-TH": {
     title: "การตรวจสอบเพื่อความปลอดภัย",
     slider_ready: "เลื่อนเพื่อไขปริศนา",
-    slider_fail: "กรุณาลองอีกครั้ง",
+    fail_message: "กรุณาลองอีกครั้ง",
     captcha_loading: "กำลังเตรียม ...",
     success_message: "ตรวจสอบสำเร็จแล้ว",
     verify: "Verify",

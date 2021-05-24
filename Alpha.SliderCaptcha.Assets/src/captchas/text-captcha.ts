@@ -8,14 +8,14 @@ import {
 } from "../utils";
 import { BaseCaptcha } from "./base-captcha";
 
-const imageWidth = 250;
-const imageHeight = 60;
+const imageWidth = 240;
+const imageHeight = imageWidth / 4;
 
 export class TextCaptcha extends BaseCaptcha {
   private backgroundCanvas: HTMLCanvasElement;
   private loading: HTMLElement;
   private input: HTMLInputElement;
-  private button: HTMLElement;
+  private button: HTMLButtonElement;
 
   private get backgroundCanvasContext() {
     return this.backgroundCanvas.getContext("2d");
@@ -27,6 +27,8 @@ export class TextCaptcha extends BaseCaptcha {
   }
 
   private initDOM() {}
+
+  isForceReset = () => false;
 
   initBody = (captchaBody: HTMLElement) => {
     const captchaWidget = captchaBody.appendChild(
@@ -55,7 +57,33 @@ export class TextCaptcha extends BaseCaptcha {
     this.input.placeholder = langResource.verify_placeholder;
     this.button = captchaFooter.appendChild(
       createElement("button", "captcha-verify-button", langResource.verify)
-    );
+    ) as HTMLButtonElement;
+    this.button.addEventListener("click", (e) => this.verifyClicked(e));
+  };
+
+  private verifyClicked = (e: MouseEvent) => {
+    e.preventDefault();
+    const status = this.mediator.getStatus();
+    if (status === CaptchaStatus.Lock) {
+      return;
+    }
+
+    const langResource = this.mediator.getLangResource();
+    const value = this.input.value;
+    if (!value) {
+      this.mediator.setStatus(CaptchaStatus.Fail);
+      this.mediator.showMessage(langResource.fail_message);
+      return;
+    }
+
+    this.button.disabled = true;
+    this.mediator.validateRequest(value, () => {
+      this.button.disabled = false;
+      const status = this.mediator.getStatus();
+      if (status === CaptchaStatus.Fail) {
+        this.mediator.showMessage(langResource.fail_message);
+      }
+    });
   };
 
   reset = () => {

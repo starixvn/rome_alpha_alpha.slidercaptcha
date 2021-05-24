@@ -7,15 +7,33 @@ using Alpha.SliderCaptcha.ImageCaptcha.Models;
 
 namespace Alpha.SliderCaptcha.ImageCaptcha.Services
 {
-    public class GenerateService : IGenerateService
+    public class CaptchaHandler : ICaptchaHandler
     {
+        private readonly CaptchaOptions captchaOptions;
         private readonly IRandomService randomService;
         private readonly IFileProvider fileProvider;
 
-        public GenerateService(IRandomService randomService, IFileProvider fileProvider)
+        public CaptchaHandler(CaptchaOptions captchaOptions, IRandomService randomService, IFileProvider fileProvider)
         {
+            this.captchaOptions = captchaOptions ?? throw new ArgumentNullException(nameof(captchaOptions));
             this.randomService = randomService ?? throw new ArgumentNullException(nameof(randomService));
             this.fileProvider = fileProvider ?? throw new ArgumentNullException(nameof(fileProvider));
+        }
+
+        public int Validate(string input, string expected)
+        {
+            if (!int.TryParse(input, out var inputPosition) || !int.TryParse(expected, out var expectedPosition))
+            {
+                return VerifyResult.Incorrect;
+            }
+
+            var isSuccess = Math.Abs(inputPosition - expectedPosition) <= captchaOptions.AcceptRange;
+            if (!isSuccess)
+            {
+                return VerifyResult.Incorrect;
+            }
+
+            return VerifyResult.Correct;
         }
 
         public IGenerateModel Generate()
