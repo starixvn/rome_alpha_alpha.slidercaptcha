@@ -77,11 +77,10 @@ module.exports = ({ mode }) => {
             },
             mangle: {
               properties: {
-                reserved: ["cleanup", "reset", "changeLanguage"],
+                regex: /^_/,
               },
             },
           },
-          // exclude: "type2.ts",
         }),
       ],
     },

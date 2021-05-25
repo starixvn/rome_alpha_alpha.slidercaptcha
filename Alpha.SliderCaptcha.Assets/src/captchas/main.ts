@@ -1,40 +1,40 @@
-import { captchaTimeout, refreshSvg } from "../consts";
+import { _captchaTimeout, _refreshSvg } from "../consts";
 import {
-  CaptchaEvent,
-  CaptchaMediator,
-  CaptchaOptions,
-  CaptchaStatus,
-  CaptchaStyle,
-  GenerateRequest,
-  GenerateResponse,
-  GenerateResponseCallback,
-  ISliderCaptcha,
-  LangResource,
-  ValidateRequest,
-  ValidateResponse,
-  ValidateResponseCallback,
+  _CaptchaEvent,
+  _CaptchaMediator,
+  _CaptchaOptions,
+  _CaptchaStatus,
+  _CaptchaStyle,
+  _GenerateRequest,
+  _GenerateResponse,
+  _GenerateResponseCallback,
+  _ISliderCaptcha,
+  _LangResource,
+  _ValidateRequest,
+  _ValidateResponse,
+  _ValidateResponseCallback,
 } from "../types";
 import {
-  createElement,
-  createHiddenInput,
-  getClientWidth,
-  getDefaultLang,
-  getLangResource,
-  hideElement,
-  joinURL,
-  makeRequest,
-  showElement,
+  _createElement,
+  _createHiddenInput,
+  _getClientWidth,
+  _getDefaultLang,
+  _getLangResource,
+  _hideElement,
+  _joinURL,
+  _makeRequest as _makeRequest,
+  _showElement,
 } from "../utils";
-import { BaseCaptcha } from "./base-captcha";
-import { ImageCaptcha } from "./image-captcha";
-import { TextCaptcha } from "./text-captcha";
+import { _BaseCaptcha } from "./base-captcha";
+import { _ImageCaptcha } from "./image-captcha";
+import { _TextCaptcha } from "./text-captcha";
 
-const ImageCaptchaWidthLimit = 340;
-const SuccessCode = 0;
+const _ImageCaptchaWidthLimit = 340;
+const _SuccessCode = 0;
 
-export class SliderCaptcha implements ISliderCaptcha {
-  static defaultOptions: CaptchaOptions = {
-    lang: getDefaultLang(),
+export class _SliderCaptcha implements _ISliderCaptcha {
+  static _defaultOptions: _CaptchaOptions = {
+    lang: _getDefaultLang(),
     baseUri: document.baseURI,
     topElement: document.body,
   };
@@ -49,27 +49,27 @@ export class SliderCaptcha implements ISliderCaptcha {
   private _titleElement: HTMLElement;
   private _refreshElement: HTMLElement;
 
-  private _options: CaptchaOptions = SliderCaptcha.defaultOptions;
-  private _langResource: LangResource;
+  private _options: _CaptchaOptions = _SliderCaptcha._defaultOptions;
+  private _langResource: _LangResource;
   private _baseUrl: string;
   private _token: string | undefined;
   private _input: HTMLInputElement;
 
-  private _captcha: BaseCaptcha;
-  private _status: CaptchaStatus = CaptchaStatus.Loading;
+  private _captcha: _BaseCaptcha;
+  private _status: _CaptchaStatus = _CaptchaStatus.Loading;
 
-  constructor(element: HTMLElement, options = SliderCaptcha.defaultOptions) {
+  constructor(element: HTMLElement, options = _SliderCaptcha._defaultOptions) {
     this._element = element;
-    this._options = { ...SliderCaptcha.defaultOptions, ...options };
-    this.readOptions();
-    this.initCaptchaStyle();
-    this.initDOM();
+    this._options = { ..._SliderCaptcha._defaultOptions, ...options };
+    this._readOptions();
+    this._initCaptchaStyle();
+    this._initDOM();
     this.reset(true);
   }
 
-  private readOptions = () => {
+  private _readOptions = () => {
     // init language
-    this._langResource = getLangResource(this._options.lang);
+    this._langResource = _getLangResource(this._options.lang);
 
     // init baseUrl
     const locationOrigin =
@@ -82,7 +82,7 @@ export class SliderCaptcha implements ISliderCaptcha {
         .toLowerCase()
         .startsWith(this._options.baseUri.toLowerCase())
     ) {
-      this._baseUrl = joinURL(locationOrigin, this._options.baseUri);
+      this._baseUrl = _joinURL(locationOrigin, this._options.baseUri);
     }
 
     // init topElement
@@ -97,50 +97,52 @@ export class SliderCaptcha implements ISliderCaptcha {
     }
   };
 
-  private initCaptchaStyle = () => {
+  private _initCaptchaStyle = () => {
     let style = this._options.style;
     if (!style) {
-      const width = getClientWidth(this._topElement);
+      const width = _getClientWidth(this._topElement);
       console.log(`client width: ${width}`);
       style =
-        width < ImageCaptchaWidthLimit ? CaptchaStyle.Text : CaptchaStyle.Image;
+        width < _ImageCaptchaWidthLimit
+          ? _CaptchaStyle.Text
+          : _CaptchaStyle.Image;
     }
 
-    const mediator: CaptchaMediator = {
-      getLangResource: () => this._langResource,
-      getTopElement: () => this._topElement,
-      makeGenerateRequest: this.makeGenerateRequest,
-      makeValidateRequest: this.makeValidateRequest,
-      setStatus: this.setStatus,
-      getStatus: () => this._status,
-      showMessage: this.showMessage,
-      hideMessage: this.hideMessage,
+    const mediator: _CaptchaMediator = {
+      _getLangResource: () => this._langResource,
+      _getTopElement: () => this._topElement,
+      _makeGenerateRequest: this._makeGenerateRequest,
+      _makeValidateRequest: this._makeValidateRequest,
+      _setStatus: this._setStatus,
+      _getStatus: () => this._status,
+      _showMessage: this._showMessage,
+      _hideMessage: this._hideMessage,
     };
 
     switch (style) {
-      case CaptchaStyle.Image:
-        this._captcha = new ImageCaptcha(mediator);
+      case _CaptchaStyle.Image:
+        this._captcha = new _ImageCaptcha(mediator);
         break;
-      case CaptchaStyle.Text:
-        this._captcha = new TextCaptcha(mediator);
+      case _CaptchaStyle.Text:
+        this._captcha = new _TextCaptcha(mediator);
         break;
       default:
         throw `Unknown style: ${style}`;
     }
   };
 
-  private setStatus = (status: CaptchaStatus) => {
+  private _setStatus = (status: _CaptchaStatus) => {
     this._status = status;
-    const statusClassName = `captcha-status-${CaptchaStatus[
+    const statusClassName = `captcha-status-${_CaptchaStatus[
       status
     ].toLowerCase()}`;
-    const styleClassName = `captcha-style-${CaptchaStyle[
-      this.getStyle()
+    const styleClassName = `captcha-style-${_CaptchaStyle[
+      this._getStyle()
     ].toLowerCase()}`;
     this._containerElement.className = `captcha-container ${statusClassName} ${styleClassName}`;
   };
 
-  private initDOM = () => {
+  private _initDOM = () => {
     const elementClassName = "alpha-slider-captcha";
     if (!this._element.classList.contains(elementClassName)) {
       this._element.classList.add(elementClassName);
@@ -152,81 +154,81 @@ export class SliderCaptcha implements ISliderCaptcha {
     }
 
     // create input
-    this._input = this._element.appendChild(createHiddenInput(elementName));
+    this._input = this._element.appendChild(_createHiddenInput(elementName));
 
     // create container
     this._containerElement = this._element.appendChild(
-      createElement("div", "captcha-container")
+      _createElement("div", "captcha-container")
     );
 
     // header
     this._headerElement = this._containerElement.appendChild(
-      createElement("div", "captcha-header")
+      _createElement("div", "captcha-header")
     );
     this._titleElement = this._headerElement.appendChild(
-      createElement("span", "", this._langResource.header_title)
+      _createElement("span", "", this._langResource._header_title)
     );
     const headerIcons = this._headerElement.appendChild(
-      createElement("div", "captcha-header-icons")
+      _createElement("div", "captcha-header-icons")
     );
     this._refreshElement = headerIcons.appendChild(
-      createElement("i", "captcha-refresh-icon", refreshSvg)
+      _createElement("i", "captcha-refresh-icon", _refreshSvg)
     );
-    this._refreshElement.addEventListener("click", this.refreshClicked);
+    this._refreshElement.addEventListener("click", this._refreshClicked);
 
     // body
     this._bodyElement = this._containerElement.appendChild(
-      createElement("div", "captcha-body")
+      _createElement("div", "captcha-body")
     );
-    this._captcha.initBody(this._bodyElement);
+    this._captcha._initBody(this._bodyElement);
 
     // footer
     this._footerElement = this._containerElement.appendChild(
-      createElement("div", "captcha-footer")
+      _createElement("div", "captcha-footer")
     );
-    this._captcha.initFooter(this._footerElement);
+    this._captcha._initFooter(this._footerElement);
 
     // message
     this._messageElement = this._containerElement.appendChild(
-      createElement("div", "captcha-message")
+      _createElement("div", "captcha-message")
     );
   };
 
-  private showMessage = (message: string) => {
-    showElement(this._messageElement);
+  private _showMessage = (message: string) => {
+    _showElement(this._messageElement);
     this._messageElement.innerHTML = message;
   };
 
-  private hideMessage = () => {
-    hideElement(this._messageElement);
+  private _hideMessage = () => {
+    _hideElement(this._messageElement);
   };
 
-  private isLoading = () => {
+  private _isLoading = () => {
     return (
-      this._status === CaptchaStatus.Loading ||
-      this._status === CaptchaStatus.Validate
+      this._status === _CaptchaStatus.Loading ||
+      this._status === _CaptchaStatus.Validate
     );
   };
 
-  private refreshClicked = () => {
-    if (this.isLoading()) {
+  private _refreshClicked = () => {
+    if (this._isLoading()) {
       return;
     }
 
     this.reset(true);
   };
 
-  private makeGenerateRequest = (callback: GenerateResponseCallback) => {
-    const requestBody: GenerateRequest = {
+  private _makeGenerateRequest = (callback: _GenerateResponseCallback) => {
+    const requestBody: _GenerateRequest = {
       Token: this._token,
-      Style: this.getStyle(),
+      Style: this._getStyle(),
     };
-    makeRequest<GenerateResponse>(
+    _makeRequest<_GenerateResponse>(
       "POST",
       `${this._baseUrl}/slidercaptcha/generate`,
       requestBody,
       (response) => {
-        this.setStatus(CaptchaStatus.Ready);
+        this._setStatus(_CaptchaStatus.Ready);
         this._token = response.Token;
         callback(response);
       },
@@ -236,30 +238,32 @@ export class SliderCaptcha implements ISliderCaptcha {
     );
   };
 
-  private makeValidateRequest = (
+  private _makeValidateRequest = (
     data: string,
-    callback: ValidateResponseCallback
+    callback: _ValidateResponseCallback
   ) => {
-    hideElement(this._messageElement);
-    this.setStatus(CaptchaStatus.Validate);
-    const requestBody: ValidateRequest = {
+    _hideElement(this._messageElement);
+    this._setStatus(_CaptchaStatus.Validate);
+    const requestBody: _ValidateRequest = {
       Token: this._token,
       Data: data,
     };
-    makeRequest<ValidateResponse>(
+    _makeRequest<_ValidateResponse>(
       "POST",
       `${this._baseUrl}/slidercaptcha/verify`,
       requestBody,
       (response) => {
-        const isSuccess = response.Code === SuccessCode;
-        this.setStatus(isSuccess ? CaptchaStatus.Success : CaptchaStatus.Fail);
+        const isSuccess = response.Code === _SuccessCode;
+        this._setStatus(
+          isSuccess ? _CaptchaStatus.Success : _CaptchaStatus.Fail
+        );
         if (isSuccess) {
           this._input.value = this._token;
-          this.showMessage(this._langResource.validate_success_message);
+          this._showMessage(this._langResource._validate_success_message);
         }
 
         callback(response);
-        const event: CaptchaEvent = {
+        const event: _CaptchaEvent = {
           preventDefault: false,
         };
         if (this._options.callback) {
@@ -272,7 +276,7 @@ export class SliderCaptcha implements ISliderCaptcha {
           } else {
             setTimeout(() => {
               this.reset(false);
-            }, captchaTimeout);
+            }, _captchaTimeout);
           }
         }
       },
@@ -294,16 +298,16 @@ export class SliderCaptcha implements ISliderCaptcha {
   };
 
   changeLanguage = (lang: string) => {
-    this._langResource = getLangResource(lang);
-    this._titleElement.innerHTML = this._langResource.header_title;
+    this._langResource = _getLangResource(lang);
+    this._titleElement.innerHTML = this._langResource._header_title;
     this._messageElement.innerHTML =
-      this._langResource.validate_success_message;
+      this._langResource._validate_success_message;
     this._captcha.changeLanguage();
   };
 
-  getStyle(): CaptchaStyle {
-    return this._captcha instanceof ImageCaptcha
-      ? CaptchaStyle.Image
-      : CaptchaStyle.Text;
+  _getStyle(): _CaptchaStyle {
+    return this._captcha instanceof _ImageCaptcha
+      ? _CaptchaStyle.Image
+      : _CaptchaStyle.Text;
   }
 }

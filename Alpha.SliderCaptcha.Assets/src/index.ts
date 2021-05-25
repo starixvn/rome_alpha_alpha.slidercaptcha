@@ -2,11 +2,11 @@
 // https://www.jqueryscript.net/demo/image-puzzle-slider-captcha/
 // UX: https://www.geetest.com/en/demo
 
-import { SliderCaptcha } from "./captchas/main";
-import { CaptchaOptions } from "./types";
-import { polyfill } from "./utils";
+import { _SliderCaptcha } from "./captchas/main";
+import { _CaptchaOptions } from "./types";
+import { _polyfill } from "./utils";
 
-const Plugin = (element: string | HTMLElement, options: CaptchaOptions) => {
+const Plugin = (element: string | HTMLElement, options: _CaptchaOptions) => {
   let $element: HTMLElement | undefined;
   if (typeof element === "string") {
     $element = document.getElementById(element);
@@ -18,9 +18,9 @@ const Plugin = (element: string | HTMLElement, options: CaptchaOptions) => {
     throw "Require a valid HTML element";
   }
 
-  return new SliderCaptcha($element, options);
+  return new _SliderCaptcha($element, options);
 };
 
-polyfill();
+_polyfill();
 (window as any).sliderCaptcha = Plugin;
-(window as any).sliderCaptcha.Constructor = SliderCaptcha;
+(window as any).sliderCaptcha.Constructor = _SliderCaptcha;

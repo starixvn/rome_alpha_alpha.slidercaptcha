@@ -1,6 +1,6 @@
-import { defaultLang, langResources } from "./consts";
+import { _defaultLang, _langResources } from "./consts";
 
-export const getParameterByName = (name, url = window.location.href) => {
+export const _getParameterByName = (name, url = window.location.href) => {
   name = name.replace(/[\[\]]/g, "\\$&");
   var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
     results = regex.exec(url);
@@ -9,31 +9,31 @@ export const getParameterByName = (name, url = window.location.href) => {
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 };
 
-export const getDefaultLang = () => {
-  let lang = getParameterByName("lang");
+export const _getDefaultLang = () => {
+  let lang = _getParameterByName("lang");
   if (!lang) {
-    lang = getParameterByName("language");
+    lang = _getParameterByName("language");
   }
 
-  return lang || defaultLang;
+  return lang || _defaultLang;
 };
 
-export const showElement = (element: HTMLElement) => {
+export const _showElement = (element: HTMLElement) => {
   element.style.display = "block";
 };
 
-export const hideElement = (element: HTMLElement) => {
+export const _hideElement = (element: HTMLElement) => {
   element.style.display = "none";
 };
 
-export const createHiddenInput = (name: string): HTMLInputElement => {
+export const _createHiddenInput = (name: string): HTMLInputElement => {
   const input = document.createElement("input");
   input.setAttribute("type", "hidden");
   input.setAttribute("name", name);
   return input;
 };
 
-export const createElement = (
+export const _createElement = (
   tagName: string,
   className = "",
   innerHtml = ""
@@ -51,7 +51,7 @@ export const createElement = (
   return element;
 };
 
-export const createCanvas = (
+export const _createCanvas = (
   width: number,
   height: number,
   className = ""
@@ -66,7 +66,7 @@ export const createCanvas = (
   return canvas;
 };
 
-export const loadImage = (
+export const _loadImage = (
   src: string,
   onloadCallback: (value: HTMLImageElement) => void,
   onerrorCallback: (value: Event) => void = (e) => {
@@ -84,7 +84,7 @@ export const loadImage = (
   image.src = src;
 };
 
-export const makeRequest = <T>(
+export const _makeRequest = <T>(
   method: string,
   url: string,
   obj = {},
@@ -116,7 +116,7 @@ export const makeRequest = <T>(
   xhr.send(JSON.stringify(obj));
 };
 
-export const joinURL = (baseUrl: string, relativeUrl: string): string => {
+export const _joinURL = (baseUrl: string, relativeUrl: string): string => {
   if (baseUrl.endsWith("/")) {
     baseUrl = baseUrl.substr(0, baseUrl.length - 1);
   }
@@ -128,7 +128,7 @@ export const joinURL = (baseUrl: string, relativeUrl: string): string => {
   return `${baseUrl}/${relativeUrl}`;
 };
 
-export const polyfill = () => {
+export const _polyfill = () => {
   const originalRemove = Element.prototype.remove;
   Element.prototype.remove = function () {
     if (originalRemove) {
@@ -185,21 +185,21 @@ export const polyfill = () => {
   }
 };
 
-export const getLangResource = (lang: string) => {
-  lang = lang || defaultLang;
-  const langs = Object.keys(langResources);
+export const _getLangResource = (lang: string) => {
+  lang = lang || _defaultLang;
+  const langs = Object.keys(_langResources);
   if (langs.indexOf(lang) === -1) {
-    lang = defaultLang;
+    lang = _defaultLang;
   }
 
-  return langResources[lang];
+  return _langResources[lang];
 };
 
-export const getClientWidth = (element: HTMLElement) => {
+export const _getClientWidth = (element: HTMLElement) => {
   return element.clientWidth;
 };
 
-export const setClientSize = (
+export const _setClientSize = (
   element: HTMLElement,
   width: number,
   height: number

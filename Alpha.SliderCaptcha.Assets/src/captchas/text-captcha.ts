@@ -1,118 +1,106 @@
-import { loadingSvg } from "../consts";
-import { CaptchaMediator, CaptchaStatus, TextCaptchaData } from "../types";
+import { _loadingSvg } from "../consts";
+import { _CaptchaMediator, _CaptchaStatus, _TextCaptchaData } from "../types";
 import {
-  createCanvas,
-  createElement,
-  loadImage,
-  setClientSize,
+  _createCanvas,
+  _createElement,
+  _loadImage,
+  _setClientSize,
 } from "../utils";
-import { BaseCaptcha } from "./base-captcha";
+import { _BaseCaptcha } from "./base-captcha";
 
 const imageWidth = 240;
 const imageHeight = imageWidth / 4;
 
-export class TextCaptcha extends BaseCaptcha {
+export class _TextCaptcha extends _BaseCaptcha {
   private _backgroundCanvas: HTMLCanvasElement;
   private _loading: HTMLElement;
   private _inputElement: HTMLInputElement;
   private _buttonElement: HTMLButtonElement;
+  private _buttonEvent;
 
-  private get backgroundCanvasContext() {
+  private get _backgroundCanvasContext() {
     return this._backgroundCanvas.getContext("2d");
   }
 
-  constructor(_mediator: CaptchaMediator) {
+  constructor(_mediator: _CaptchaMediator) {
     super(_mediator);
-    this.initDOM();
+    this._initDOM();
   }
 
-  private initDOM() {}
+  private _initDOM() {}
 
-  isForceReset = () => false;
-
-  initBody = (captchaBody: HTMLElement) => {
+  _initBody = (captchaBody: HTMLElement) => {
     const captchaWidget = captchaBody.appendChild(
-      createElement("div", "captcha-widget")
+      _createElement("div", "captcha-widget")
     );
-    setClientSize(captchaWidget, imageWidth, imageHeight);
+    _setClientSize(captchaWidget, imageWidth, imageHeight);
     this._backgroundCanvas = captchaWidget.appendChild(
-      createCanvas(imageWidth, imageHeight, "captcha-background")
+      _createCanvas(imageWidth, imageHeight, "captcha-background")
     );
     const loading = captchaWidget.appendChild(
-      createElement("div", "captcha-loading")
+      _createElement("div", "captcha-loading")
     );
     loading.appendChild(
-      createElement("div", "captcha-loading-icon", loadingSvg)
+      _createElement("div", "captcha-loading-icon", _loadingSvg)
     );
     this._loading = loading.appendChild(
-      createElement(
+      _createElement(
         "span",
         "",
-        this._mediator.getLangResource().captcha_loading
+        this._mediator._getLangResource()._captcha_loading
       )
     );
   };
 
-  initFooter = (captchaFooter: HTMLElement) => {
-    const langResource = this._mediator.getLangResource();
+  _initFooter = (captchaFooter: HTMLElement) => {
+    const langResource = this._mediator._getLangResource();
     this._inputElement = captchaFooter.appendChild(
-      createElement("input", "captcha-verify-input")
+      _createElement("input", "captcha-verify-input")
     ) as HTMLInputElement;
-    this._inputElement.placeholder = langResource.validate_placeholder;
+    this._inputElement.placeholder = langResource._validate_placeholder;
     this._buttonElement = captchaFooter.appendChild(
-      createElement(
+      _createElement(
         "button",
         "captcha-verify-button",
-        langResource.validate_button
+        langResource._validate_button
       )
     ) as HTMLButtonElement;
-    this._buttonElement.addEventListener("click", (e) => this.verifyClicked(e));
+    this._buttonElement.addEventListener(
+      "click",
+      (this._buttonEvent = (e) => this._verifyClicked(e))
+    );
   };
 
-  private verifyClicked = (e: MouseEvent) => {
+  private _verifyClicked = (e: MouseEvent) => {
     e.preventDefault();
-    const status = this._mediator.getStatus();
-    if (status === CaptchaStatus.Loading || status === CaptchaStatus.Validate) {
+    const status = this._mediator._getStatus();
+    if (status === _CaptchaStatus.Loading || status === _CaptchaStatus.Validate) {
       return;
     }
 
-    const langResource = this._mediator.getLangResource();
+    const langResource = this._mediator._getLangResource();
     const value = this._inputElement.value;
     if (!value) {
-      this._mediator.setStatus(CaptchaStatus.Fail);
-      this._mediator.showMessage(langResource.validate_fail_message);
+      this._mediator._setStatus(_CaptchaStatus.Fail);
+      this._mediator._showMessage(langResource._validate_fail_message);
       return;
     }
 
     this._buttonElement.disabled = true;
-    this._mediator.makeValidateRequest(value, () => {
+    this._mediator._makeValidateRequest(value, () => {
       this._buttonElement.disabled = false;
-      const status = this._mediator.getStatus();
-      if (status === CaptchaStatus.Fail) {
-        this._mediator.showMessage(langResource.validate_fail_message);
+      const status = this._mediator._getStatus();
+      if (status === _CaptchaStatus.Fail) {
+        this._mediator._showMessage(langResource._validate_fail_message);
       }
     });
   };
 
-  reset = (isRefresh: boolean) => {
-    if (isRefresh) {
-      const clearCanvasContext = (canvasContext: CanvasRenderingContext2D) => {
-        canvasContext.clearRect(0, 0, imageWidth, imageHeight);
-      };
-      this._inputElement.value = "";
-      this._mediator.setStatus(CaptchaStatus.Loading);
-      clearCanvasContext(this.backgroundCanvasContext);
-      this.loadImages();
-    } else {
-      this._mediator.hideMessage();
-    }
-  };
-
-  private loadImages = () => {
-    this._mediator.makeGenerateRequest((response) => {
-      const data = response.Data as TextCaptchaData;
-      loadImage(data.Background, (image) => {
-        this.backgroundCanvasContext.drawImage(
+  private _loadImages = () => {
+    this._mediator._makeGenerateRequest((response) => {
+      const data = response.Data as _TextCaptchaData;
+      _loadImage(data.Background, (image) => {
+        this._backgroundCanvasContext.drawImage(
           image,
           0,
           0,
@@ -123,9 +111,27 @@ export class TextCaptcha extends BaseCaptcha {
     });
   };
 
+  reset = (isRefresh: boolean) => {
+    if (isRefresh) {
+      const clearCanvasContext = (canvasContext: CanvasRenderingContext2D) => {
+        canvasContext.clearRect(0, 0, imageWidth, imageHeight);
+      };
+      this._inputElement.value = "";
+      this._mediator._setStatus(_CaptchaStatus.Loading);
+      clearCanvasContext(this._backgroundCanvasContext);
+      this._loadImages();
+    } else {
+      this._mediator._hideMessage();
+    }
+  };
+
+  cleanup = () => {
+    this._buttonElement.removeEventListener("click", this._buttonEvent);
+  };
+
   changeLanguage = () => {
-    const langResource = this._mediator.getLangResource();
-    this._loading.innerHTML = langResource.captcha_loading;
-    this._buttonElement.innerHTML = langResource.validate_button;
+    const langResource = this._mediator._getLangResource();
+    this._loading.innerHTML = langResource._captcha_loading;
+    this._buttonElement.innerHTML = langResource._validate_button;
   };
 }

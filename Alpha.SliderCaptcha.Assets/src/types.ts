@@ -1,79 +1,79 @@
-export type GenerateRequest = {
+export type _GenerateRequest = {
   Token: string;
   Style: number;
 };
 
-export type ImageCaptchaData = {
+export type _ImageCaptchaData = {
   Background: string;
   Slice: string;
   Position: number;
 };
 
-export type TextCaptchaData = {
+export type _TextCaptchaData = {
   Background: string;
 };
 
-export type GenerateResponse = {
+export type _GenerateResponse = {
   Token: string;
-  Data: ImageCaptchaData | TextCaptchaData;
+  Data: _ImageCaptchaData | _TextCaptchaData;
 };
 
-export type GenerateResponseCallback = (response: GenerateResponse) => void;
+export type _GenerateResponseCallback = (response: _GenerateResponse) => void;
 
-export type ValidateRequest = {
+export type _ValidateRequest = {
   Token: string;
   Data: string;
 };
 
-export type ValidateResponseCallback = (response: ValidateResponse) => void;
+export type _ValidateResponseCallback = (response: _ValidateResponse) => void;
 
-export type ValidateResponse = {
+export type _ValidateResponse = {
   Code: number;
   Message: string;
 };
 
-export type CaptchaOptions = {
+export type _CaptchaOptions = {
   lang: string;
   baseUri: string;
   topElement: HTMLElement;
-  style?: CaptchaStyle;
-  callback?: CaptchaCallback;
+  style?: _CaptchaStyle;
+  callback?: _CaptchaCallback;
 };
 
-export type CaptchaEvent = {
+export type _CaptchaEvent = {
   preventDefault: boolean;
 };
 
-export type CaptchaCallback = (
-  data: ValidateResponse,
-  event: CaptchaEvent
+export type _CaptchaCallback = (
+  data: _ValidateResponse,
+  event: _CaptchaEvent
 ) => void;
 
-export type LangResource = {
-  header_title: string;
-  slider_ready: string;
-  captcha_loading: string;
-  validate_fail_message: string;
-  validate_success_message: string;
-  validate_button: string;
-  validate_placeholder: string;
+export type _LangResource = {
+  _header_title: string;
+  _slider_ready: string;
+  _captcha_loading: string;
+  _validate_fail_message: string;
+  _validate_success_message: string;
+  _validate_button: string;
+  _validate_placeholder: string;
 };
 
-export type CaptchaMediator = {
-  getLangResource: () => LangResource;
-  getTopElement: () => HTMLElement;
-  makeGenerateRequest: (callback: GenerateResponseCallback) => void;
-  makeValidateRequest: (
+export type _CaptchaMediator = {
+  _getLangResource: () => _LangResource;
+  _getTopElement: () => HTMLElement;
+  _makeGenerateRequest: (callback: _GenerateResponseCallback) => void;
+  _makeValidateRequest: (
     data: string,
-    callback: ValidateResponseCallback
+    callback: _ValidateResponseCallback
   ) => void;
-  setStatus: (status: CaptchaStatus) => void;
-  getStatus: () => CaptchaStatus;
-  showMessage: (message: string) => void;
-  hideMessage: () => void;
+  _setStatus: (status: _CaptchaStatus) => void;
+  _getStatus: () => _CaptchaStatus;
+  _showMessage: (message: string) => void;
+  _hideMessage: () => void;
 };
 
-export enum CaptchaStatus {
+export enum _CaptchaStatus {
   Loading = 0,
   Ready = 1,
   Slide = 2,
@@ -82,12 +82,12 @@ export enum CaptchaStatus {
   Success = 5,
 }
 
-export enum CaptchaStyle {
+export enum _CaptchaStyle {
   Text = 0,
   Image = 1,
 }
 
-export interface ISliderCaptcha {
+export interface _ISliderCaptcha {
   reset: (force: boolean) => void;
   cleanup: () => void;
   changeLanguage: (lang: string) => void;
