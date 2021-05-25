@@ -13,9 +13,9 @@ import {
 } from "../utils";
 import { _BaseCaptcha } from "./base-captcha";
 
-const imageWidth = 300;
-const imageHeight = 160;
-const sliderWidth = 40;
+const _imageWidth = 300;
+const _imageHeight = 160;
+const _sliderWidth = 40;
 
 export class _ImageCaptcha extends _BaseCaptcha {
   private _backgroundCanvas: HTMLCanvasElement;
@@ -85,12 +85,12 @@ export class _ImageCaptcha extends _BaseCaptcha {
     const captchaWidget = captchaBody.appendChild(
       _createElement("div", "captcha-widget")
     );
-    _setClientSize(captchaWidget, imageWidth, imageHeight);
+    _setClientSize(captchaWidget, _imageWidth, _imageHeight);
     this._backgroundCanvas = captchaWidget.appendChild(
-      _createCanvas(imageWidth, imageHeight, "captcha-background")
+      _createCanvas(_imageWidth, _imageHeight, "captcha-background")
     );
     this._sliceCanvas = captchaWidget.appendChild(
-      _createCanvas(sliderWidth, imageHeight, "captcha-slice")
+      _createCanvas(_sliderWidth, _imageHeight, "captcha-slice")
     );
     const loading = captchaWidget.appendChild(
       _createElement("div", "captcha-loading")
@@ -203,7 +203,7 @@ export class _ImageCaptcha extends _BaseCaptcha {
     console.log(`handleDragMove (x: ${x}, y: ${y})`);
     const moveX = Math.min(
       Math.max(x - this._originX, 0),
-      imageWidth - sliderWidth
+      _imageWidth - _sliderWidth
     );
     this._sliderButton.style.left = moveX + "px";
     this._sliderMask.style.width = moveX + "px";
@@ -245,7 +245,7 @@ export class _ImageCaptcha extends _BaseCaptcha {
 
   reset = () => {
     const clearCanvasContext = (canvasContext: CanvasRenderingContext2D) => {
-      canvasContext.clearRect(0, 0, imageWidth, imageHeight);
+      canvasContext.clearRect(0, 0, _imageWidth, _imageHeight);
     };
 
     this._sliderButton.style.left = "0";

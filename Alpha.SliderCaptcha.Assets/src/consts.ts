@@ -13,7 +13,7 @@ export const _langResources: {
     _captcha_loading: "Loading ...",
     _validate_success_message: "Verification Succeeded",
     _validate_button: "Verify",
-    _validate_placeholder: "Input captcha code",
+    _validate_placeholder: "Validation",
   },
   "zh-CN": {
     _header_title: "安全验证",
@@ -22,7 +22,7 @@ export const _langResources: {
     _captcha_loading: "正在载入...",
     _validate_success_message: "验证成功",
     _validate_button: "Verify",
-    _validate_placeholder: "Input captcha code",
+    _validate_placeholder: "Validation",
   },
   "zh-TW": {
     _header_title: "安全驗證",
@@ -31,7 +31,7 @@ export const _langResources: {
     _captcha_loading: "正在載入...",
     _validate_success_message: "驗證成功",
     _validate_button: "Verify",
-    _validate_placeholder: "Input captcha code",
+    _validate_placeholder: "Validation",
   },
   "vi-VN": {
     _header_title: "Xác Thực Captcha",
@@ -40,7 +40,7 @@ export const _langResources: {
     _captcha_loading: "Đang tải...",
     _validate_success_message: "Xác Thực Thành Công",
     _validate_button: "Verify",
-    _validate_placeholder: "Input captcha code",
+    _validate_placeholder: "Validation",
   },
   "th-TH": {
     _header_title: "การตรวจสอบเพื่อความปลอดภัย",
@@ -49,7 +49,7 @@ export const _langResources: {
     _captcha_loading: "กำลังเตรียม ...",
     _validate_success_message: "ตรวจสอบสำเร็จแล้ว",
     _validate_button: "Verify",
-    _validate_placeholder: "Input captcha code",
+    _validate_placeholder: "Validation",
   },
 };
 

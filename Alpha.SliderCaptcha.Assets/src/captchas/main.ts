@@ -192,6 +192,7 @@ export class _SliderCaptcha implements _ISliderCaptcha {
     this._messageElement = this._containerElement.appendChild(
       _createElement("div", "captcha-message")
     );
+    _hideElement(this._messageElement);
   };
 
   private _showMessage = (message: string) => {

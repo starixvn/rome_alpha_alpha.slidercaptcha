@@ -8,8 +8,8 @@ import {
 } from "../utils";
 import { _BaseCaptcha } from "./base-captcha";
 
-const imageWidth = 240;
-const imageHeight = imageWidth / 4;
+const _imageWidth = 240;
+const _imageHeight = _imageWidth / 4;
 
 export class _TextCaptcha extends _BaseCaptcha {
   private _backgroundCanvas: HTMLCanvasElement;
@@ -33,9 +33,9 @@ export class _TextCaptcha extends _BaseCaptcha {
     const captchaWidget = captchaBody.appendChild(
       _createElement("div", "captcha-widget")
     );
-    _setClientSize(captchaWidget, imageWidth, imageHeight);
+    _setClientSize(captchaWidget, _imageWidth, _imageHeight);
     this._backgroundCanvas = captchaWidget.appendChild(
-      _createCanvas(imageWidth, imageHeight, "captcha-background")
+      _createCanvas(_imageWidth, _imageHeight, "captcha-background")
     );
     const loading = captchaWidget.appendChild(
       _createElement("div", "captcha-loading")
@@ -114,7 +114,7 @@ export class _TextCaptcha extends _BaseCaptcha {
   reset = (isRefresh: boolean) => {
     if (isRefresh) {
       const clearCanvasContext = (canvasContext: CanvasRenderingContext2D) => {
-        canvasContext.clearRect(0, 0, imageWidth, imageHeight);
+        canvasContext.clearRect(0, 0, _imageWidth, _imageHeight);
       };
       this._inputElement.value = "";
       this._mediator._setStatus(_CaptchaStatus.Loading);
