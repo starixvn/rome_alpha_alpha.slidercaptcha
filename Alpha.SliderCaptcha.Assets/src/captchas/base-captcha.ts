@@ -1,7 +1,7 @@
 import { CaptchaMediator } from "../types";
 
 export class BaseCaptcha {
-  constructor(protected mediator: CaptchaMediator) {}
+  constructor(protected _mediator: CaptchaMediator) {}
   initBody = (_: HTMLElement) => {};
   initFooter = (_: HTMLElement) => {};
   cleanup = () => {};

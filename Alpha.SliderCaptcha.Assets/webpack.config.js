@@ -18,7 +18,7 @@ module.exports = ({ mode }) => {
       path: isDev ? devOutputPath : path.resolve(__dirname, "dist"),
       filename: "Scripts/alpha.slider-captcha.js",
       library: {
-        name: "CaptchaSlider",
+        name: "SliderCaptcha",
         type: "umd",
       },
     },
@@ -75,7 +75,13 @@ module.exports = ({ mode }) => {
             compress: {
               pure_funcs: ["console.log"],
             },
+            mangle: {
+              properties: {
+                reserved: ["cleanup", "reset", "changeLanguage"],
+              },
+            },
           },
+          // exclude: "type2.ts",
         }),
       ],
     },

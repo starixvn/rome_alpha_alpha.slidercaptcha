@@ -23,5 +23,4 @@ const Plugin = (element: string | HTMLElement, options: CaptchaOptions) => {
 
 polyfill();
 (window as any).sliderCaptcha = Plugin;
-(window as any).sliderCaptcha.VERSION = "1.0";
 (window as any).sliderCaptcha.Constructor = SliderCaptcha;

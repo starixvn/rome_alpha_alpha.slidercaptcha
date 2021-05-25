@@ -18,38 +18,38 @@ const imageHeight = 160;
 const sliderWidth = 40;
 
 export class ImageCaptcha extends BaseCaptcha {
-  private backgroundCanvas: HTMLCanvasElement;
-  private sliceCanvas: HTMLCanvasElement;
-  private loading: HTMLElement;
-  private sliderContainer: HTMLElement;
-  private sliderText: HTMLElement;
-  private sliderButton: HTMLElement;
-  private sliderMask: HTMLElement;
-  private documentMousemove;
-  private documentTouchmove;
-  private documentMouseup;
-  private documentTouchend;
-  private hasFailed = false;
-  private topValue: string;
-  private originX = 0;
+  private _backgroundCanvas: HTMLCanvasElement;
+  private _sliceCanvas: HTMLCanvasElement;
+  private _loading: HTMLElement;
+  private _sliderContainer: HTMLElement;
+  private _sliderText: HTMLElement;
+  private _sliderButton: HTMLElement;
+  private _sliderMask: HTMLElement;
+  private _documentMousemove;
+  private _documentTouchmove;
+  private _documentMouseup;
+  private _documentTouchend;
+  private _hasFailed = false;
+  private _topValue: string;
+  private _originX = 0;
 
   private get backgroundCanvasContext() {
-    return this.backgroundCanvas.getContext("2d");
+    return this._backgroundCanvas.getContext("2d");
   }
 
   private get sliceCanvasContext() {
-    return this.sliceCanvas.getContext("2d");
+    return this._sliceCanvas.getContext("2d");
   }
 
-  constructor(mediator: CaptchaMediator) {
-    super(mediator);
+  constructor(_mediator: CaptchaMediator) {
+    super(_mediator);
     this.initDOM();
   }
 
   private initDOM = () => {
     document.addEventListener(
       "mousemove",
-      (this.documentMousemove = (e: MouseEvent) => {
+      (this._documentMousemove = (e: MouseEvent) => {
         if (!this.handleDragMove(e.clientX, e.clientY)) {
           e.stopPropagation();
           e.preventDefault();
@@ -58,7 +58,7 @@ export class ImageCaptcha extends BaseCaptcha {
     );
     document.addEventListener(
       "touchmove",
-      (this.documentTouchmove = (e: TouchEvent) => {
+      (this._documentTouchmove = (e: TouchEvent) => {
         if (!this.handleDragMove(e.touches[0].clientX, e.touches[0].clientY)) {
           e.stopPropagation();
           e.preventDefault();
@@ -69,13 +69,13 @@ export class ImageCaptcha extends BaseCaptcha {
 
     document.addEventListener(
       "mouseup",
-      (this.documentMouseup = () => {
+      (this._documentMouseup = () => {
         return this.handleDragEnd();
       })
     );
     document.addEventListener(
       "touchend",
-      (this.documentTouchend = () => {
+      (this._documentTouchend = () => {
         return this.handleDragEnd();
       })
     );
@@ -86,10 +86,10 @@ export class ImageCaptcha extends BaseCaptcha {
       createElement("div", "captcha-widget")
     );
     setClientSize(captchaWidget, imageWidth, imageHeight);
-    this.backgroundCanvas = captchaWidget.appendChild(
+    this._backgroundCanvas = captchaWidget.appendChild(
       createCanvas(imageWidth, imageHeight, "captcha-background")
     );
-    this.sliceCanvas = captchaWidget.appendChild(
+    this._sliceCanvas = captchaWidget.appendChild(
       createCanvas(sliderWidth, imageHeight, "captcha-slice")
     );
     const loading = captchaWidget.appendChild(
@@ -98,40 +98,44 @@ export class ImageCaptcha extends BaseCaptcha {
     loading.appendChild(
       createElement("div", "captcha-loading-icon", loadingSvg)
     );
-    this.loading = loading.appendChild(
-      createElement("span", "", this.mediator.getLangResource().captcha_loading)
+    this._loading = loading.appendChild(
+      createElement(
+        "span",
+        "",
+        this._mediator.getLangResource().captcha_loading
+      )
     );
   };
 
   initFooter = (captchaFooter: HTMLElement) => {
-    this.sliderContainer = captchaFooter.appendChild(
+    this._sliderContainer = captchaFooter.appendChild(
       createElement("div", "captcha-slider-container")
     );
-    this.sliderText = this.sliderContainer.appendChild(
+    this._sliderText = this._sliderContainer.appendChild(
       createElement("span", "captcha-slider-text")
     );
-    this.sliderText.innerHTML = this.mediator.getLangResource().slider_ready;
-    this.sliderMask = this.sliderContainer.appendChild(
+    this._sliderText.innerHTML = this._mediator.getLangResource().slider_ready;
+    this._sliderMask = this._sliderContainer.appendChild(
       createElement("div", "captcha-slider-mask")
     );
 
     // init slider button
-    this.sliderButton = this.sliderContainer.appendChild(
+    this._sliderButton = this._sliderContainer.appendChild(
       createElement("div", "captcha-slider-button")
     );
-    this.sliderButton.appendChild(
+    this._sliderButton.appendChild(
       createElement("i", "captcha-slider-icon", sliderReadySvg)
     );
-    this.sliderButton.addEventListener("mousedown", (e) => {
+    this._sliderButton.addEventListener("mousedown", (e) => {
       this.handleDragStart(e.clientX, e.clientY);
     });
-    this.sliderButton.addEventListener("touchstart", (e) => {
+    this._sliderButton.addEventListener("touchstart", (e) => {
       this.handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
     });
   };
 
   private loadImages = () => {
-    this.mediator.generateRequest((response) => {
+    this._mediator.makeGenerateRequest((response) => {
       const data = response.Data as ImageCaptchaData;
       loadImage(data.Background, (image) => {
         this.backgroundCanvasContext.drawImage(
@@ -155,7 +159,7 @@ export class ImageCaptcha extends BaseCaptcha {
   };
 
   private setStatus = (status: CaptchaStatus) => {
-    this.mediator.setStatus(status);
+    this._mediator.setStatus(status);
     this.statusChanged(status);
   };
 
@@ -164,9 +168,9 @@ export class ImageCaptcha extends BaseCaptcha {
     switch (status) {
       case CaptchaStatus.Fail:
         sliderSvg = sliderFailSvg;
-        this.hasFailed = true;
-        this.sliderText.innerHTML =
-          this.mediator.getLangResource().fail_message;
+        this._hasFailed = true;
+        this._sliderText.innerHTML =
+          this._mediator.getLangResource().validate_fail_message;
         break;
       case CaptchaStatus.Success:
         sliderSvg = sliderSuccessSvg;
@@ -174,68 +178,68 @@ export class ImageCaptcha extends BaseCaptcha {
     }
 
     if (status !== CaptchaStatus.Slide) {
-      this.sliderButton.innerHTML = sliderSvg;
+      this._sliderButton.innerHTML = sliderSvg;
     }
   };
 
   private handleDragStart = (x: number, y: number) => {
-    const status = this.mediator.getStatus();
-    if (status === CaptchaStatus.Loading || status === CaptchaStatus.Verify) {
+    const status = this._mediator.getStatus();
+    if (status === CaptchaStatus.Loading || status === CaptchaStatus.Validate) {
       return;
     }
 
     console.log("handleDragStart");
     this.freezeOverflowContainer();
     this.setStatus(CaptchaStatus.Slide);
-    this.originX = x;
+    this._originX = x;
   };
 
   private handleDragMove = (x: number, y: number) => {
-    const status = this.mediator.getStatus();
+    const status = this._mediator.getStatus();
     if (status !== CaptchaStatus.Slide) {
       return true;
     }
 
     console.log(`handleDragMove (x: ${x}, y: ${y})`);
     const moveX = Math.min(
-      Math.max(x - this.originX, 0),
+      Math.max(x - this._originX, 0),
       imageWidth - sliderWidth
     );
-    this.sliderButton.style.left = moveX + "px";
-    this.sliderMask.style.width = moveX + "px";
-    this.sliceCanvas.style.left = moveX + "px";
+    this._sliderButton.style.left = moveX + "px";
+    this._sliderMask.style.width = moveX + "px";
+    this._sliceCanvas.style.left = moveX + "px";
     return false;
   };
 
   private handleDragEnd = () => {
-    const status = this.mediator.getStatus();
+    const status = this._mediator.getStatus();
     if (status !== CaptchaStatus.Slide) {
       return;
     }
 
     console.log("handleDragEnd");
     this.unfreezeOverflowContainer();
-    this.mediator.validateRequest(
-      this.sliceCanvas.offsetLeft.toString(),
+    this._mediator.makeValidateRequest(
+      this._sliceCanvas.offsetLeft.toString(),
       () => {
-        const status = this.mediator.getStatus();
+        const status = this._mediator.getStatus();
         this.statusChanged(status);
       }
     );
   };
 
   private freezeOverflowContainer() {
-    const topElement = this.mediator.getTopElement();
+    const topElement = this._mediator.getTopElement();
     if (topElement) {
-      this.topValue = document.body.style.touchAction;
+      this._topValue = document.body.style.touchAction;
       topElement.style.touchAction = "none";
     }
   }
 
   private unfreezeOverflowContainer() {
-    const topElement = this.mediator.getTopElement();
+    const topElement = this._mediator.getTopElement();
     if (topElement) {
-      topElement.style.touchAction = this.topValue;
+      topElement.style.touchAction = this._topValue;
     }
   }
 
@@ -244,9 +248,9 @@ export class ImageCaptcha extends BaseCaptcha {
       canvasContext.clearRect(0, 0, imageWidth, imageHeight);
     };
 
-    this.sliderButton.style.left = "0";
-    this.sliderMask.style.width = "0";
-    this.sliceCanvas.style.left = "0";
+    this._sliderButton.style.left = "0";
+    this._sliderMask.style.width = "0";
+    this._sliceCanvas.style.left = "0";
     this.setStatus(CaptchaStatus.Loading);
     clearCanvasContext(this.backgroundCanvasContext);
     clearCanvasContext(this.sliceCanvasContext);
@@ -254,17 +258,17 @@ export class ImageCaptcha extends BaseCaptcha {
   };
 
   cleanup = () => {
-    document.removeEventListener("mousemove", this.documentMousemove);
-    document.removeEventListener("touchmove", this.documentTouchmove);
-    document.removeEventListener("mouseup", this.documentMouseup);
-    document.removeEventListener("touchend", this.documentTouchend);
+    document.removeEventListener("mousemove", this._documentMousemove);
+    document.removeEventListener("touchmove", this._documentTouchmove);
+    document.removeEventListener("mouseup", this._documentMouseup);
+    document.removeEventListener("touchend", this._documentTouchend);
   };
 
   changeLanguage = () => {
-    const langResource = this.mediator.getLangResource();
-    this.loading.innerHTML = langResource.captcha_loading;
-    this.sliderText.innerHTML = this.hasFailed
-      ? langResource.fail_message
+    const langResource = this._mediator.getLangResource();
+    this._loading.innerHTML = langResource.captcha_loading;
+    this._sliderText.innerHTML = this._hasFailed
+      ? langResource.validate_fail_message
       : langResource.slider_ready;
   };
 }

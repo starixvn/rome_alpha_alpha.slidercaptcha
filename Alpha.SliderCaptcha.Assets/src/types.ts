@@ -49,13 +49,37 @@ export type CaptchaCallback = (
   event: CaptchaEvent
 ) => void;
 
+export type LangResource = {
+  header_title: string;
+  slider_ready: string;
+  captcha_loading: string;
+  validate_fail_message: string;
+  validate_success_message: string;
+  validate_button: string;
+  validate_placeholder: string;
+};
+
+export type CaptchaMediator = {
+  getLangResource: () => LangResource;
+  getTopElement: () => HTMLElement;
+  makeGenerateRequest: (callback: GenerateResponseCallback) => void;
+  makeValidateRequest: (
+    data: string,
+    callback: ValidateResponseCallback
+  ) => void;
+  setStatus: (status: CaptchaStatus) => void;
+  getStatus: () => CaptchaStatus;
+  showMessage: (message: string) => void;
+  hideMessage: () => void;
+};
+
 export enum CaptchaStatus {
-  Loading,
-  Ready,
-  Slide,
-  Verify,
-  Fail,
-  Success,
+  Loading = 0,
+  Ready = 1,
+  Slide = 2,
+  Validate = 3,
+  Fail = 4,
+  Success = 5,
 }
 
 export enum CaptchaStyle {
@@ -63,29 +87,8 @@ export enum CaptchaStyle {
   Image = 1,
 }
 
-export type LangResource = {
-  title: string;
-  slider_ready: string;
-  captcha_loading: string;
-  fail_message: string;
-  success_message: string;
-  verify: string;
-  verify_placeholder: string;
-};
-
 export interface ISliderCaptcha {
   reset: (force: boolean) => void;
   cleanup: () => void;
   changeLanguage: (lang: string) => void;
 }
-
-export type CaptchaMediator = {
-  getLangResource: () => LangResource;
-  getTopElement: () => HTMLElement;
-  generateRequest: (callback: GenerateResponseCallback) => void;
-  validateRequest: (data: string, callback: ValidateResponseCallback) => void;
-  setStatus: (status: CaptchaStatus) => void;
-  getStatus: () => CaptchaStatus;
-  showMessage: (message: string) => void;
-  hideMessage: () => void;
-};
