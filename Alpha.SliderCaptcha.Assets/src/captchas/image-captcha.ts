@@ -173,26 +173,26 @@ export class ImageCaptcha extends BaseCaptcha {
         break;
     }
 
-    if (status !== CaptchaStatus.Move) {
+    if (status !== CaptchaStatus.Slide) {
       this.sliderButton.innerHTML = sliderSvg;
     }
   };
 
   private handleDragStart = (x: number, y: number) => {
     const status = this.mediator.getStatus();
-    if (status === CaptchaStatus.Loading || status === CaptchaStatus.Lock) {
+    if (status === CaptchaStatus.Loading || status === CaptchaStatus.Verify) {
       return;
     }
 
     console.log("handleDragStart");
     this.freezeOverflowContainer();
-    this.setStatus(CaptchaStatus.Move);
+    this.setStatus(CaptchaStatus.Slide);
     this.originX = x;
   };
 
   private handleDragMove = (x: number, y: number) => {
     const status = this.mediator.getStatus();
-    if (status !== CaptchaStatus.Move) {
+    if (status !== CaptchaStatus.Slide) {
       return true;
     }
 
@@ -209,7 +209,7 @@ export class ImageCaptcha extends BaseCaptcha {
 
   private handleDragEnd = () => {
     const status = this.mediator.getStatus();
-    if (status !== CaptchaStatus.Move) {
+    if (status !== CaptchaStatus.Slide) {
       return;
     }
 

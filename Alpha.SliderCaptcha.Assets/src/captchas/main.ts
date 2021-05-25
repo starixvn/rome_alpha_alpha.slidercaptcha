@@ -114,6 +114,7 @@ export class SliderCaptcha implements ISliderCaptcha {
       setStatus: this.setStatus,
       getStatus: () => this.status,
       showMessage: this.showMessage,
+      hideMessage: this.hideMessage,
     };
 
     switch (style) {
@@ -196,10 +197,14 @@ export class SliderCaptcha implements ISliderCaptcha {
     this.messageElement.innerHTML = message;
   };
 
+  private hideMessage = () => {
+    hideElement(this.messageElement);
+  };
+
   private isLoading = () => {
     return (
       this.status === CaptchaStatus.Loading ||
-      this.status === CaptchaStatus.Lock
+      this.status === CaptchaStatus.Verify
     );
   };
 
@@ -236,7 +241,7 @@ export class SliderCaptcha implements ISliderCaptcha {
     callback: ValidateResponseCallback
   ) => {
     hideElement(this.messageElement);
-    this.setStatus(CaptchaStatus.Lock);
+    this.setStatus(CaptchaStatus.Verify);
     const requestBody: ValidateRequest = {
       Token: this.token,
       Data: data,
@@ -264,11 +269,11 @@ export class SliderCaptcha implements ISliderCaptcha {
         if (!event.preventDefault) {
           if (isSuccess) {
             this.cleanup();
+          } else {
+            setTimeout(() => {
+              this.reset(false);
+            }, captchaTimeout);
           }
-
-          setTimeout(() => {
-            this.reset(false);
-          }, captchaTimeout);
         }
       },
       ({ statusText }) => {
@@ -277,10 +282,8 @@ export class SliderCaptcha implements ISliderCaptcha {
     );
   };
 
-  reset = (force: boolean) => {
-    if (force || this.captcha.isForceReset()) {
-      this.captcha.reset();
-    }
+  reset = (isRefresh: boolean) => {
+    this.captcha.reset(isRefresh);
   };
 
   cleanup = () => {

@@ -64,7 +64,7 @@ export class TextCaptcha extends BaseCaptcha {
   private verifyClicked = (e: MouseEvent) => {
     e.preventDefault();
     const status = this.mediator.getStatus();
-    if (status === CaptchaStatus.Lock) {
+    if (status === CaptchaStatus.Loading || status === CaptchaStatus.Verify) {
       return;
     }
 
@@ -86,14 +86,18 @@ export class TextCaptcha extends BaseCaptcha {
     });
   };
 
-  reset = () => {
-    const clearCanvasContext = (canvasContext: CanvasRenderingContext2D) => {
-      canvasContext.clearRect(0, 0, imageWidth, imageHeight);
-    };
-
-    this.mediator.setStatus(CaptchaStatus.Loading);
-    clearCanvasContext(this.backgroundCanvasContext);
-    this.loadImages();
+  reset = (isRefresh: boolean) => {
+    if (isRefresh) {
+      const clearCanvasContext = (canvasContext: CanvasRenderingContext2D) => {
+        canvasContext.clearRect(0, 0, imageWidth, imageHeight);
+      };
+      this.input.value = "";
+      this.mediator.setStatus(CaptchaStatus.Loading);
+      clearCanvasContext(this.backgroundCanvasContext);
+      this.loadImages();
+    } else {
+      this.mediator.hideMessage();
+    }
   };
 
   private loadImages = () => {

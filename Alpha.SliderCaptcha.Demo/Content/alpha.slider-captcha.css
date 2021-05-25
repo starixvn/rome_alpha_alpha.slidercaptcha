@@ -1,6 +1,5 @@
 .alpha-slider-captcha {
-  margin: 10px 0;
-  display: inline-block; }
+  margin: 10px 0; }
   .alpha-slider-captcha svg {
     overflow: hidden; }
   .alpha-slider-captcha .captcha-message {
@@ -8,7 +7,8 @@
   .alpha-slider-captcha .captcha-container {
     padding: 10px 0;
     border: 1px solid #c4c4c4;
-    background: #fff; }
+    background: #fff;
+    display: inline-block; }
     .alpha-slider-captcha .captcha-container.captcha-style-image .captcha-loading {
       padding-top: 10%; }
     .alpha-slider-captcha .captcha-container.captcha-style-image .captcha-message {
@@ -34,15 +34,18 @@
     .alpha-slider-captcha .captcha-container.captcha-status-fail .captcha-slider-button {
       background: #f57a7a !important;
       border-color: #f57a7a !important; }
-    .alpha-slider-captcha .captcha-container.captcha-status-success .captcha-slider-mask {
-      border-color: #52ccba !important;
-      background: #d2f4ef !important; }
-    .alpha-slider-captcha .captcha-container.captcha-status-success .captcha-slider-button {
-      background: #52ccba !important;
-      border-color: #52ccba !important; }
-    .alpha-slider-captcha .captcha-container.captcha-status-success .captcha-message {
+    .alpha-slider-captcha .captcha-container.captcha-status-success {
       display: block !important;
-      color: #18a452 !important; }
+      text-align: center; }
+      .alpha-slider-captcha .captcha-container.captcha-status-success .captcha-slider-mask {
+        border-color: #52ccba !important;
+        background: #d2f4ef !important; }
+      .alpha-slider-captcha .captcha-container.captcha-status-success .captcha-slider-button {
+        background: #52ccba !important;
+        border-color: #52ccba !important; }
+      .alpha-slider-captcha .captcha-container.captcha-status-success .captcha-message {
+        display: block !important;
+        color: #18a452 !important; }
     .alpha-slider-captcha .captcha-container.captcha-status-loading .captcha-slider-button {
       background: #6c757d !important;
       border-color: #6c757d !important; }

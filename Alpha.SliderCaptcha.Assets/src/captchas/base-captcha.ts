@@ -5,7 +5,6 @@ export class BaseCaptcha {
   initBody = (_: HTMLElement) => {};
   initFooter = (_: HTMLElement) => {};
   cleanup = () => {};
-  reset = () => {};
+  reset = (_: boolean) => {};
   changeLanguage = () => {};
-  isForceReset = () => true;
 }

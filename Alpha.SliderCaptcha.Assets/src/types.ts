@@ -52,8 +52,8 @@ export type CaptchaCallback = (
 export enum CaptchaStatus {
   Loading,
   Ready,
-  Move,
-  Lock,
+  Slide,
+  Verify,
   Fail,
   Success,
 }
@@ -87,4 +87,5 @@ export type CaptchaMediator = {
   setStatus: (status: CaptchaStatus) => void;
   getStatus: () => CaptchaStatus;
   showMessage: (message: string) => void;
+  hideMessage: () => void;
 };
