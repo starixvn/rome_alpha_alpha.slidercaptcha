@@ -22,7 +22,7 @@ import {
   _getLangResource,
   _hideElement,
   _joinURL,
-  _makeRequest as _makeRequest,
+  _makeRequest,
   _showElement,
 } from "../utils";
 import { _BaseCaptcha } from "./base-captcha";

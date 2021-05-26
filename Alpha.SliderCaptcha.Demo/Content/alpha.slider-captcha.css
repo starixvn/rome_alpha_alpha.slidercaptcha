@@ -1,5 +1,6 @@
 .alpha-slider-captcha {
-  margin: 10px 0; }
+  margin: 10px 0;
+  text-align: center; }
   .alpha-slider-captcha svg {
     overflow: hidden; }
   .alpha-slider-captcha .captcha-message {
@@ -8,7 +9,8 @@
     padding: 10px 0;
     border: 1px solid #c4c4c4;
     background: #fff;
-    display: inline-block; }
+    display: inline-block;
+    text-align: left; }
     .alpha-slider-captcha .captcha-container.captcha-style-image .captcha-loading {
       padding-top: 10%; }
     .alpha-slider-captcha .captcha-container.captcha-style-image .captcha-message {

@@ -9,6 +9,7 @@ $padding: 10px;
 
 .alpha-slider-captcha {
   margin: $padding 0;
+  text-align: center;
 
   svg {
     overflow: hidden;
@@ -23,6 +24,7 @@ $padding: 10px;
     border: 1px solid #c4c4c4;
     background: #fff;
     display: inline-block;
+    text-align: left;
 
     &.captcha-style-image {
       .captcha-loading {
