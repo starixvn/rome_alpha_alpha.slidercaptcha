@@ -29,7 +29,7 @@ import { _BaseCaptcha } from "./base-captcha";
 import { _ImageCaptcha } from "./image-captcha";
 import { _TextCaptcha } from "./text-captcha";
 
-const _ImageCaptchaWidthLimit = 340;
+const _ImageCaptchaWidthLimit = 0;
 const _SuccessCode = 0;
 
 export class _SliderCaptcha implements _ISliderCaptcha {

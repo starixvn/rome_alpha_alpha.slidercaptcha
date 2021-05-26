@@ -132,6 +132,7 @@ namespace Alpha.SliderCaptcha.Core.Services
                 return new VerifyResult(VerifyResult.Timeout, "Timeout error. Please try again");
             }
 
+            cacheService.Remove(verifyingCacheKey);
             var captchaHandler = GetCaptchaHandler((CaptchaStyle)cacheData.Style);
             var verifyCode = captchaHandler.Validate(data, cacheData.Data);
             if (verifyCode != VerifyResult.Correct)
@@ -139,7 +140,6 @@ namespace Alpha.SliderCaptcha.Core.Services
                 return new VerifyResult(VerifyResult.Incorrect, "Incorrect");
             }
 
-            cacheService.Remove(verifyingCacheKey);
             cacheService.Set(GetVerifiedCacheKey(token), DateTime.UtcNow, new CacheItemOptions
             {
                 SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.VerifiedMinutes)
@@ -163,6 +163,7 @@ namespace Alpha.SliderCaptcha.Core.Services
                 return new VerifyResult(VerifyResult.Timeout, "Timeout error. Please try again");
             }
 
+            await cacheService.RemoveAsync(verifyingCacheKey).ConfigureAwait(false);
             var captchaHandler = GetCaptchaHandler((CaptchaStyle)cacheData.Style);
             var verifyCode = captchaHandler.Validate(data, cacheData.Data);
             if (verifyCode != VerifyResult.Correct)
@@ -170,11 +171,10 @@ namespace Alpha.SliderCaptcha.Core.Services
                 return new VerifyResult(VerifyResult.Incorrect, "Incorrect");
             }
 
-            cacheService.Remove(verifyingCacheKey);
-            cacheService.Set(GetVerifiedCacheKey(token), DateTime.UtcNow, new CacheItemOptions
+            await cacheService.SetAsync(GetVerifiedCacheKey(token), DateTime.UtcNow, new CacheItemOptions
             {
                 SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.VerifiedMinutes)
-            });
+            }).ConfigureAwait(false);
 
             httpContextService.SaveCookieToken(token);
             return new VerifyResult(VerifyResult.Correct, "Success");
