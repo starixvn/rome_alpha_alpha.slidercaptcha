@@ -58,6 +58,7 @@ export class _TextCaptcha extends _BaseCaptcha {
       _createElement("input", "captcha-verify-input")
     ) as HTMLInputElement;
     this._inputElement.placeholder = langResource._validate_placeholder;
+    this._inputElement.autocomplete = 'off';
     this._buttonElement = captchaFooter.appendChild(
       _createElement(
         "button",
