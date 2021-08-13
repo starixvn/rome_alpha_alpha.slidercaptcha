@@ -24,16 +24,16 @@ namespace Alpha.SliderCaptcha.ImageCaptcha.Services
         {
             if (!int.TryParse(input, out var inputPosition) || !int.TryParse(expected, out var expectedPosition))
             {
-                return VerifyResult.Incorrect;
+                return Result.Incorrect;
             }
 
             var isSuccess = Math.Abs(inputPosition - expectedPosition) <= captchaOptions.AcceptRange;
             if (!isSuccess)
             {
-                return VerifyResult.Incorrect;
+                return Result.Incorrect;
             }
 
-            return VerifyResult.Correct;
+            return Result.Correct;
         }
 
         public IGenerateModel Generate()

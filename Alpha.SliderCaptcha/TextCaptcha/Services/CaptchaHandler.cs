@@ -19,7 +19,7 @@ namespace Alpha.SliderCaptcha.TextCaptcha.Services
 
         public int Validate(string input, string expected)
         {
-            return string.Compare(input, expected, true) == 0 ? VerifyResult.Correct : VerifyResult.Incorrect;
+            return string.Compare(input, expected, true) == 0 ? Result.Correct : Result.Incorrect;
         }
 
         public IGenerateModel Generate()

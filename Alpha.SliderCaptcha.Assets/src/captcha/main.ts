@@ -1,4 +1,4 @@
-import { _captchaTimeout, _refreshSvg } from "../consts";
+import { _captchaTimeout, _refreshSvg } from "../constants";
 import {
   _CaptchaEvent,
   _CaptchaMediator,
@@ -40,6 +40,7 @@ export class _SliderCaptcha implements _ISliderCaptcha {
   };
 
   private _element: HTMLElement;
+  private _keyElement?: HTMLInputElement;
   private _topElement: HTMLElement;
   private _headerElement: HTMLElement;
   private _bodyElement: HTMLElement;
@@ -95,13 +96,15 @@ export class _SliderCaptcha implements _ISliderCaptcha {
     if (!this._topElement) {
       throw "topElement is required";
     }
+
+    this._keyElement = this._options.keyElement;
   };
 
   private _initCaptchaStyle = () => {
     let style = this._options.style;
     if (!style) {
       const width = _getClientWidth(this._topElement);
-      console.log(`client width: ${width}`);
+      console.debug(`client width: ${width}`);
       style =
         width < _ImageCaptchaWidthLimit
           ? _CaptchaStyle.Text
@@ -221,9 +224,11 @@ export class _SliderCaptcha implements _ISliderCaptcha {
 
   private _makeGenerateRequest = (callback: _GenerateResponseCallback) => {
     const requestBody: _GenerateRequest = {
+      Key: this._keyElement ? this._keyElement.value : "",
       Token: this._token,
       Style: this._getStyle(),
     };
+    console.log("generate", requestBody);
     _makeRequest<_GenerateResponse>(
       "POST",
       `${this._baseUrl}/slidercaptcha/generate`,
@@ -246,9 +251,11 @@ export class _SliderCaptcha implements _ISliderCaptcha {
     _hideElement(this._messageElement);
     this._setStatus(_CaptchaStatus.Validate);
     const requestBody: _ValidateRequest = {
+      Key: this._keyElement ? this._keyElement.value : "",
       Token: this._token,
       Data: data,
     };
+    console.log("verify", requestBody);
     _makeRequest<_ValidateResponse>(
       "POST",
       `${this._baseUrl}/slidercaptcha/verify`,

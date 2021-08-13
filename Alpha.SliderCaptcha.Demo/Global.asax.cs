@@ -1,9 +1,13 @@
-﻿using System.Web;
+﻿using System.Configuration;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using Alpha.SliderCaptcha.Core;
 using Alpha.SliderCaptcha.Mvc;
+using Fanex.Logging;
+using Fanex.Logging.Extensions;
+using Fanex.Logging.Extensions.Web;
+using Fanex.Logging.RabbitMQ;
 
 namespace Alpha.SliderCaptcha.Demo
 {
@@ -15,7 +19,10 @@ namespace Alpha.SliderCaptcha.Demo
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            Configuration.Use(new CaptchaOptions("~/App_Data/slider-captcha", 5, 5, 1));
+            LogManager.SetDefaultLogCategory(ConfigurationManager.AppSettings["Fanex.Logging:DefaultCategory"])
+                .Use(new RabbitMQLogging(ConfigurationManager.AppSettings["Fanex.Logging:RabbitMQConnectionStrings"]));
+            ExceptionHandler.UseConfig(new LoggingConfiguration());
+            SliderCaptchaHandler.Use();
         }
     }
 }

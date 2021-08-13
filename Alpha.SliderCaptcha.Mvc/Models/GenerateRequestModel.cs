@@ -6,6 +6,8 @@ namespace Alpha.SliderCaptcha.Mvc.Models
     {
         public string Token { get; set; }
 
+        public string Key { get; set; }
+
         public byte Style { get; } = (byte)CaptchaStyle.Image;
     }
 }

@@ -73,7 +73,7 @@ module.exports = ({ mode }) => {
         new TerserPlugin({
           terserOptions: {
             compress: {
-              pure_funcs: ["console.log"],
+              pure_funcs: ["console.debug"],
             },
             mangle: {
               properties: {

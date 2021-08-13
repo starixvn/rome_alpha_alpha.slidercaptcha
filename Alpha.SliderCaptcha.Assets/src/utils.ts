@@ -1,4 +1,4 @@
-import { _defaultLang, _langResources } from "./consts";
+import { _defaultLang, _langResources } from "./constants";
 
 export const _getParameterByName = (name, url = window.location.href) => {
   name = name.replace(/[\[\]]/g, "\\$&");

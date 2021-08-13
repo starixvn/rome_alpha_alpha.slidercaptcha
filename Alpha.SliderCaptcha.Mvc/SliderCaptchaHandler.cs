@@ -2,7 +2,7 @@ using Alpha.SliderCaptcha.Core;
 
 namespace Alpha.SliderCaptcha.Mvc
 {
-    public static class Configuration
+    public static class SliderCaptchaHandler
     {
         public const string BackgroundPath = "backgrounds";
 
@@ -18,14 +18,16 @@ namespace Alpha.SliderCaptcha.Mvc
             CaptchaOptions = captchaOptions;
         }
 
-        public static void Use(CaptchaOptions captchaOptions)
+        public static void Use(IServiceFactory serviceFactory)
         {
-            Use(new ServiceFactory(), captchaOptions);
+            var configuration = SliderCaptchaConfiguration.Default;
+            var captchaOptions = new CaptchaOptions(configuration.LogEnabled, configuration.ImagePath, configuration.AcceptRange, configuration.DragTimeout, configuration.VerifyTimeout);
+            Use(serviceFactory, captchaOptions);
         }
 
         public static void Use()
         {
-            Use(new ServiceFactory(), new CaptchaOptions());
+            Use(new ServiceFactory());
         }
     }
 }

@@ -12,13 +12,13 @@ namespace Alpha.SliderCaptcha.Core.Services
 
         Task<GenerateResult> GenerateAsync(string token, CaptchaStyle style);
 
-        VerifyResult Verify(string token, string data);
+        Result Verify(string token, string data);
 
-        Task<VerifyResult> VerifyAsync(string token, string data);
+        Task<Result> VerifyAsync(string token, string data);
 
-        bool IsVerfied(string token);
+        Result IsVerfied(string token);
 
-        Task<bool> IsVerifiedAsync(string token);
+        Task<Result> IsVerifiedAsync(string token);
     }
 
     public class CaptchaService : ICaptchaService
@@ -88,7 +88,7 @@ namespace Alpha.SliderCaptcha.Core.Services
                 };
                 cacheService.Set(cacheKey, cacheData, new CacheItemOptions
                 {
-                    RelativeExpiration = TimeSpan.FromMinutes(captchaOptions.TimeoutMinutes)
+                    RelativeExpiration = TimeSpan.FromMinutes(captchaOptions.DragTimeout)
                 });
                 return new GenerateResult(token, model.GetResponseData());
             }
@@ -112,108 +112,108 @@ namespace Alpha.SliderCaptcha.Core.Services
                 };
                 await cacheService.SetAsync(cacheKey, cacheData, new CacheItemOptions
                 {
-                    RelativeExpiration = TimeSpan.FromMinutes(captchaOptions.TimeoutMinutes)
+                    RelativeExpiration = TimeSpan.FromMinutes(captchaOptions.DragTimeout)
                 }).ConfigureAwait(false);
                 return new GenerateResult(token, model.GetResponseData());
             }
         }
 
-        public VerifyResult Verify(string token, string data)
+        public Result Verify(string token, string data)
         {
             if (!tokenService.IsValid(token))
             {
-                return new VerifyResult(VerifyResult.InvalidToken, "Invalid request");
+                return new Result(Result.InvalidToken, "Invalid token");
             }
 
             var verifyingCacheKey = GetVerifyingCacheKey(token);
             var cacheData = cacheService.Get<CacheData>(verifyingCacheKey);
             if (cacheData == null)
             {
-                return new VerifyResult(VerifyResult.Timeout, "Timeout error. Please try again");
+                return new Result(Result.Timeout, "Timeout error. Please try again");
             }
 
             cacheService.Remove(verifyingCacheKey);
             var captchaHandler = GetCaptchaHandler((CaptchaStyle)cacheData.Style);
             var verifyCode = captchaHandler.Validate(data, cacheData.Data);
-            if (verifyCode != VerifyResult.Correct)
+            if (verifyCode != Result.Correct)
             {
-                return new VerifyResult(VerifyResult.Incorrect, "Incorrect");
+                return new Result(Result.Incorrect, "Incorrect");
             }
 
             cacheService.Set(GetVerifiedCacheKey(token), DateTime.UtcNow, new CacheItemOptions
             {
-                SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.VerifiedMinutes)
+                SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.VerifyTimeout)
             });
 
             httpContextService.SaveCookieToken(token);
-            return new VerifyResult(VerifyResult.Correct, "Success");
+            return new Result(Result.Correct, "Success");
         }
 
-        public async Task<VerifyResult> VerifyAsync(string token, string data)
+        public async Task<Result> VerifyAsync(string token, string data)
         {
             if (!tokenService.IsValid(token))
             {
-                return new VerifyResult(VerifyResult.InvalidToken, "Invalid request");
+                return new Result(Result.InvalidToken, "Invalid request");
             }
 
             var verifyingCacheKey = GetVerifyingCacheKey(token);
             var cacheData = await cacheService.GetAsync<CacheData>(verifyingCacheKey).ConfigureAwait(false);
             if (cacheData == null)
             {
-                return new VerifyResult(VerifyResult.Timeout, "Timeout error. Please try again");
+                return new Result(Result.Timeout, "Timeout error. Please try again");
             }
 
             await cacheService.RemoveAsync(verifyingCacheKey).ConfigureAwait(false);
             var captchaHandler = GetCaptchaHandler((CaptchaStyle)cacheData.Style);
             var verifyCode = captchaHandler.Validate(data, cacheData.Data);
-            if (verifyCode != VerifyResult.Correct)
+            if (verifyCode != Result.Correct)
             {
-                return new VerifyResult(VerifyResult.Incorrect, "Incorrect");
+                return new Result(Result.Incorrect, "Incorrect", $"Input={data}, Expected={cacheData.Data}, AcceptRange={captchaOptions.AcceptRange}");
             }
 
             await cacheService.SetAsync(GetVerifiedCacheKey(token), DateTime.UtcNow, new CacheItemOptions
             {
-                SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.VerifiedMinutes)
+                SlidingExpiration = TimeSpan.FromMinutes(captchaOptions.VerifyTimeout)
             }).ConfigureAwait(false);
 
             httpContextService.SaveCookieToken(token);
-            return new VerifyResult(VerifyResult.Correct, "Success");
+            return new Result(Result.Correct, "Success");
         }
 
-        public bool IsVerfied(string token)
+        public Result IsVerfied(string token)
         {
             token = string.IsNullOrEmpty(token) ? httpContextService.TakeCookieToken() : token;
             if (!tokenService.IsValid(token))
             {
-                return false;
+                return new Result(Result.InvalidToken, "Invalid token");
             }
 
             var verifiedCacheKey = GetVerifiedCacheKey(token);
             if (!cacheService.Contain(verifiedCacheKey))
             {
-                return false;
+                return new Result(Result.Timeout, "Token is timeout");
             }
 
             cacheService.Remove(verifiedCacheKey);
-            return true;
+            return new Result(Result.Correct, "Success");
         }
 
-        public async Task<bool> IsVerifiedAsync(string token)
+        public async Task<Result> IsVerifiedAsync(string token)
         {
             token = string.IsNullOrEmpty(token) ? httpContextService.TakeCookieToken() : token;
             if (!tokenService.IsValid(token))
             {
-                return false;
+                return new Result(Result.InvalidToken, "Invalid token");
             }
 
             var verifiedCacheKey = GetVerifiedCacheKey(token);
             if (!await cacheService.ContainAsync(verifiedCacheKey).ConfigureAwait(false))
             {
-                return false;
+                return new Result(Result.Timeout, "Token is timeout");
             }
 
             await cacheService.RemoveAsync(verifiedCacheKey).ConfigureAwait(false);
-            return true;
+            return new Result(Result.Correct, "Success");
         }
     }
 }

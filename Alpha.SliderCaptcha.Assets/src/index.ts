@@ -2,7 +2,7 @@
 // https://www.jqueryscript.net/demo/image-puzzle-slider-captcha/
 // UX: https://www.geetest.com/en/demo
 
-import { _SliderCaptcha } from "./captchas/main";
+import { _SliderCaptcha } from "./captcha/main";
 import { _CaptchaOptions } from "./types";
 import { _polyfill } from "./utils";
 

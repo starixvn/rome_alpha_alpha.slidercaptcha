@@ -1,4 +1,4 @@
-import { _loadingSvg } from "../consts";
+import { _loadingSvg } from "../constants";
 import { _CaptchaMediator, _CaptchaStatus, _TextCaptchaData } from "../types";
 import {
   _createCanvas,
@@ -68,7 +68,7 @@ export class _TextCaptcha extends _BaseCaptcha {
     ) as HTMLButtonElement;
     this._buttonElement.addEventListener(
       "click",
-      (this._buttonEvent = (e) => this._verifyClicked(e))
+      (this._buttonEvent = (e: MouseEvent) => this._verifyClicked(e))
     );
   };
 

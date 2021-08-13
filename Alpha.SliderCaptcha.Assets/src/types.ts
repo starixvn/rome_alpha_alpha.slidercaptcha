@@ -1,5 +1,6 @@
 export type _GenerateRequest = {
   Token: string;
+  Key: string;
   Style: number;
 };
 
@@ -22,6 +23,7 @@ export type _GenerateResponseCallback = (response: _GenerateResponse) => void;
 
 export type _ValidateRequest = {
   Token: string;
+  Key: string;
   Data: string;
 };
 
@@ -35,6 +37,7 @@ export type _ValidateResponse = {
 export type _CaptchaOptions = {
   lang: string;
   baseUri: string;
+  keyElement?: HTMLInputElement,
   topElement: HTMLElement;
   style?: _CaptchaStyle;
   callback?: _CaptchaCallback;

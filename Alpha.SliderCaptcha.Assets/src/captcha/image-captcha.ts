@@ -3,7 +3,7 @@ import {
   _sliderFailSvg,
   _sliderReadySvg,
   _sliderSuccessSvg,
-} from "../consts";
+} from "../constants";
 import { _CaptchaMediator, _CaptchaStatus, _ImageCaptchaData } from "../types";
 import {
   _createCanvas,
@@ -188,7 +188,7 @@ export class _ImageCaptcha extends _BaseCaptcha {
       return;
     }
 
-    console.log("handleDragStart");
+    console.debug("handleDragStart");
     this._freezeOverflowContainer();
     this._setStatus(_CaptchaStatus.Slide);
     this._originX = x;
@@ -200,7 +200,7 @@ export class _ImageCaptcha extends _BaseCaptcha {
       return true;
     }
 
-    console.log(`handleDragMove (x: ${x}, y: ${y})`);
+    console.debug(`handleDragMove (x: ${x}, y: ${y})`);
     const moveX = Math.min(
       Math.max(x - this._originX, 0),
       _imageWidth - _sliderWidth
@@ -217,7 +217,7 @@ export class _ImageCaptcha extends _BaseCaptcha {
       return;
     }
 
-    console.log("handleDragEnd");
+    console.debug("handleDragEnd");
     this._unfreezeOverflowContainer();
     this._mediator._makeValidateRequest(
       this._sliceCanvas.offsetLeft.toString(),

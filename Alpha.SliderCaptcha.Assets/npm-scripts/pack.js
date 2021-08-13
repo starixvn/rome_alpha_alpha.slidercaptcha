@@ -12,7 +12,7 @@ const archive = archiver("zip", {
 
 archive.on("warning", function (err) {
   if (err.code === "ENOENT") {
-    console.warn(err);
+    console.error(err);
   } else {
     // throw error
     throw err;
@@ -32,7 +32,7 @@ archive.file("dist/Content/alpha.slider-captcha.css", {
 });
 archive.directory("images/", "images");
 archive.finalize().then(() => {
-  console.debug("Pack completed");
+  console.log("Pack completed");
 
   const publishPath = `L:/Users/2.WEB_Team/leo.vo/Alpha.SliderCaptcha/${fileName}`;
   fs.copyFile(filePath, publishPath, (err) => {

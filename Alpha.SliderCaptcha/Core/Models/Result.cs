@@ -1,6 +1,6 @@
 namespace Alpha.SliderCaptcha.Core.Models
 {
-    public class VerifyResult
+    public class Result
     {
         public const int Correct = 0;
         public const int Incorrect = 1;
@@ -11,10 +11,20 @@ namespace Alpha.SliderCaptcha.Core.Models
 
         public string Reason { get; }
 
-        public VerifyResult(int code, string reason)
+        public string Detail { get; }
+
+        public bool IsSuccess => Code == Correct;
+
+        public Result(int code, string reason)
+            : this(code, reason, string.Empty)
+        {
+        }
+
+        public Result(int code, string reason, string detail)
         {
             Code = code;
             Reason = reason;
+            Detail = detail;
         }
     }
 }

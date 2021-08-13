@@ -36,12 +36,12 @@ namespace Alpha.SliderCaptcha.Demo.Controllers
         public async Task<ActionResult> IndexPost(IndexModel model)
         {
             var isSuccess = false;
-            var message = string.Empty;
             var key = GetLoginCacheKey(model);
+            string message;
             if (cacheService.Contain(key))
             {
-                var isVerified = await captchaService.IsVerifiedAsync(model.Token).ConfigureAwait(false);
-                if (isVerified)
+                var isVerifiedResult = await captchaService.IsVerifiedAsync(model.Token).ConfigureAwait(false);
+                if (isVerifiedResult.IsSuccess)
                 {
                     cacheService.Remove(key);
                     return View(VerifyLogin(model));

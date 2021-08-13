@@ -27,7 +27,7 @@ namespace Alpha.SliderCaptcha.Mvc
 
         public virtual ICaptchaService CaptchaService =>
             DependencyResolver.Current.GetService(typeof(ICaptchaService)) as ICaptchaService ??
-            new CaptchaService(Configuration.CaptchaOptions, CacheService, TokenService, HttpContextService, RandomService, FileProvider);
+            new CaptchaService(SliderCaptchaHandler.CaptchaOptions, CacheService, TokenService, HttpContextService, RandomService, FileProvider);
 
         public virtual IFileProvider FileProvider
         {
@@ -35,7 +35,7 @@ namespace Alpha.SliderCaptcha.Mvc
             {
                 if (fileProvider == null)
                 {
-                    fileProvider = DependencyResolver.Current.GetService(typeof(IFileProvider)) as IFileProvider ?? new FileProvider(Configuration.CaptchaOptions, RandomService);
+                    fileProvider = DependencyResolver.Current.GetService(typeof(IFileProvider)) as IFileProvider ?? new FileProvider(SliderCaptchaHandler.CaptchaOptions, RandomService);
                 }
 
                 return fileProvider;
@@ -48,6 +48,6 @@ namespace Alpha.SliderCaptcha.Mvc
 
         public virtual ICacheService CacheService => DependencyResolver.Current.GetService(typeof(ICacheService)) as ICacheService ?? new CacheService();
 
-        public virtual IHttpContextService HttpContextService => DependencyResolver.Current.GetService(typeof(IHttpContextService)) as IHttpContextService ?? new HttpContextService(HttpContext.Current, Configuration.CaptchaOptions);
+        public virtual IHttpContextService HttpContextService => DependencyResolver.Current.GetService(typeof(IHttpContextService)) as IHttpContextService ?? new HttpContextService(HttpContext.Current, SliderCaptchaHandler.CaptchaOptions);
     }
 }

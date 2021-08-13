@@ -1,34 +1,24 @@
-﻿using System.IO;
-
-namespace Alpha.SliderCaptcha.Core
+﻿namespace Alpha.SliderCaptcha.Core
 {
     public class CaptchaOptions
     {
-        private static readonly string DefaultImagePath = Path.Combine("wwwroot", "slider-captcha");
-
-        private const int DefaultAcceptRange = 5;
-        private const int DefaultTimeoutMinutes = 5;
-        private const int DefaultVerifiedMinutes = 5;
+        public bool LogEnabled { get; }
 
         public string ImagePath { get; }
 
-        public int TimeoutMinutes { get; set; }
-
         public int AcceptRange { get; }
 
-        public int VerifiedMinutes { get; }
+        public int DragTimeout { get; set; }
 
-        public CaptchaOptions() :
-            this(DefaultImagePath, DefaultAcceptRange, DefaultTimeoutMinutes, DefaultVerifiedMinutes)
-        {
-        }
+        public int VerifyTimeout { get; }
 
-        public CaptchaOptions(string imagePath, int acceptRange, int timeoutMinutes, int verifiedMinutes)
+        public CaptchaOptions(bool logEnabled, string imagePath, int acceptRange, int dragTimeout, int verifyTimeout)
         {
+            LogEnabled = logEnabled;
             ImagePath = imagePath;
             AcceptRange = acceptRange;
-            TimeoutMinutes = timeoutMinutes;
-            VerifiedMinutes = verifiedMinutes;
+            DragTimeout = dragTimeout;
+            VerifyTimeout = verifyTimeout;
         }
     }
 }
