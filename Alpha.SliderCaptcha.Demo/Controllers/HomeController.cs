@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Alpha.SliderCaptcha.Core.Services;
 using Alpha.SliderCaptcha.Demo.Models;
 using Alpha.SliderCaptcha.Mvc;
 using Fanex.Caching;
+using Fanex.Logging.Extensions.Web;
 
 namespace Alpha.SliderCaptcha.Demo.Controllers
 {
@@ -48,6 +50,8 @@ namespace Alpha.SliderCaptcha.Demo.Controllers
                 }
                 else
                 {
+                    var exception = new Exception($"login captcha: key={model.Username}, code={isVerifiedResult.Code}, reason={isVerifiedResult.Reason}, detail={isVerifiedResult.Detail}");
+                    ExceptionHandler.Handle(exception, TraceEventType.Warning);
                     message = "Please verify you are not a robot";
                 }
             }
