@@ -285,10 +285,6 @@
       <Project>{ada13cdd-8ef2-45c5-ab4b-a7674762829c}</Project>
       <Name>Alpha.SliderCaptcha.Mvc</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Alpha.SliderCaptcha\Alpha.SliderCaptcha.csproj">
-      <Project>{672243b1-c048-4cd8-9f53-e259e4cf2672}</Project>
-      <Name>Alpha.SliderCaptcha</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

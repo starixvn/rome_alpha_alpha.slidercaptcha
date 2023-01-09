@@ -19,14 +19,9 @@ namespace Alpha.SliderCaptcha.Core.Services
         private const int ExpiredMinutes = 15;
         private readonly IHttpContextService httpContextService;
 
-        public TokenService()
-            : this(null)
-        {
-        }
-
         public TokenService(IHttpContextService httpContextService)
         {
-            this.httpContextService = httpContextService ?? new HttpContextService();
+            this.httpContextService = httpContextService;
         }
 
         public string Generate()

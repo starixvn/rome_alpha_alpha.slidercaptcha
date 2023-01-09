@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>ASP.NET Core Slider Captcha</Description>
+    <Copyright>Starixsoft</Copyright>
+    <Authors>@Rome</Authors>
+    <PackageTags>netcore captcha</PackageTags>
+    <Version>1.0.0-beta1</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Alpha.SliderCaptcha\Alpha.SliderCaptcha.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -2,23 +2,14 @@
 {
     public class CaptchaOptions
     {
-        public bool LogEnabled { get; }
+        public bool LogEnabled { get; set; }
 
-        public string ImagePath { get; }
+        public string ImagePath { get; set; }
 
-        public int AcceptRange { get; }
+        public int AcceptRange { get; set; }
 
         public int DragTimeout { get; set; }
 
-        public int VerifyTimeout { get; }
-
-        public CaptchaOptions(bool logEnabled, string imagePath, int acceptRange, int dragTimeout, int verifyTimeout)
-        {
-            LogEnabled = logEnabled;
-            ImagePath = imagePath;
-            AcceptRange = acceptRange;
-            DragTimeout = dragTimeout;
-            VerifyTimeout = verifyTimeout;
-        }
+        public int VerifyTimeout { get; set; }
     }
 }

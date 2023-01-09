@@ -21,7 +21,7 @@
   <ItemGroup>
     <PackageReference Include="Fanex.Logging.Extensions.Web" Version="1.0.8" />
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.3" />
-    <ProjectReference Include="..\Alpha.SliderCaptcha\Alpha.SliderCaptcha.csproj" />
+    <ProjectReference Include="..\..\Alpha.SliderCaptcha\Alpha.SliderCaptcha.csproj" />
     <Reference Include="System.Configuration" />
 	<Reference Include="System.Web" />
   </ItemGroup>

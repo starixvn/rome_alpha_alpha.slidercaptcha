@@ -1,18 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.31702.278
+VisualStudioVersion = 16.0.33027.164
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alpha.SliderCaptcha.Demo", "Alpha.SliderCaptcha.Demo\Alpha.SliderCaptcha.Demo.csproj", "{BA16847E-A928-4260-A7C8-0A4178FB1E82}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alpha.SliderCaptcha", "Alpha.SliderCaptcha\Alpha.SliderCaptcha.csproj", "{672243B1-C048-4CD8-9F53-E259E4CF2672}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alpha.SliderCaptcha.Mvc", "Alpha.SliderCaptcha.Mvc\Alpha.SliderCaptcha.Mvc.csproj", "{ADA13CDD-8EF2-45C5-AB4B-A7674762829C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7967B706-56A2-4F27-A902-AF6FEB9209F3}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alpha.SliderCaptcha", "..\Alpha.SliderCaptcha\Alpha.SliderCaptcha.csproj", "{A11088FA-F44F-4244-AD42-424FA80FD199}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,14 +19,14 @@ Global
 		{BA16847E-A928-4260-A7C8-0A4178FB1E82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA16847E-A928-4260-A7C8-0A4178FB1E82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA16847E-A928-4260-A7C8-0A4178FB1E82}.Release|Any CPU.Build.0 = Release|Any CPU
-		{672243B1-C048-4CD8-9F53-E259E4CF2672}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{672243B1-C048-4CD8-9F53-E259E4CF2672}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{672243B1-C048-4CD8-9F53-E259E4CF2672}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{672243B1-C048-4CD8-9F53-E259E4CF2672}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ADA13CDD-8EF2-45C5-AB4B-A7674762829C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ADA13CDD-8EF2-45C5-AB4B-A7674762829C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADA13CDD-8EF2-45C5-AB4B-A7674762829C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADA13CDD-8EF2-45C5-AB4B-A7674762829C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A11088FA-F44F-4244-AD42-424FA80FD199}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A11088FA-F44F-4244-AD42-424FA80FD199}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A11088FA-F44F-4244-AD42-424FA80FD199}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A11088FA-F44F-4244-AD42-424FA80FD199}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
