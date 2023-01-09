@@ -84,15 +84,16 @@ namespace Alpha.SliderCaptcha.TextCaptcha.Services
 
         private GraphicsPath TextPath(string s, Font f, Rectangle r)
         {
-            var sf = new StringFormat
+            using (var sf = new StringFormat
             {
                 Alignment = StringAlignment.Near,
                 LineAlignment = StringAlignment.Near
-            };
-
-            var gp = new GraphicsPath();
-            gp.AddString(s, f.FontFamily, (int)f.Style, f.Size, r, sf);
-            return gp;
+            })
+            {
+                var gp = new GraphicsPath();
+                gp.AddString(s, f.FontFamily, (int)f.Style, f.Size, r, sf);
+                return gp;
+            }
         }
 
         private Font GetFont(GenerateOptions generateOptions)
@@ -160,9 +161,11 @@ namespace Alpha.SliderCaptcha.TextCaptcha.Services
             var leftBottom = RandomPoint(left, left + wrange, height - hrange, height);
             var rightBottom = RandomPoint(width - wrange, width, height - hrange, height);
             var points = new PointF[] { leftTop, rightTop, leftBottom, rightBottom };
-            var m = new Matrix();
-            m.Translate(0, 0);
-            textPath.Warp(points, rectF, m, WarpMode.Perspective, 0);
+            using (var m = new Matrix())
+            {
+                m.Translate(0, 0);
+                textPath.Warp(points, rectF, m, WarpMode.Perspective, 0);
+            }
         }
 
         private void AddNoise(GenerateOptions generateOptions, Graphics graphics, Rectangle rect)

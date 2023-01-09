@@ -14,10 +14,9 @@ namespace Alpha.SliderCaptcha.Core.Services
 
     public class TokenService : ITokenService
     {
-        private static SHA1 sha1 = SHA1.Create();
-        private static readonly string Secret = "nExDev";
-        private static readonly int TokenLength = 44;
-        private static readonly int ExpiredMinutes = 15;
+        private const string Secret = "nExDev";
+        private const int TokenLength = 44;
+        private const int ExpiredMinutes = 15;
         private readonly IHttpContextService httpContextService;
 
         public TokenService()
@@ -73,10 +72,13 @@ namespace Alpha.SliderCaptcha.Core.Services
 
         private static string GenerateSHA1(string body, string secret)
         {
-            var key1 = sha1.ComputeHash(Encoding.UTF8.GetBytes(body));
-            var key2 = key1.Concat(Encoding.UTF8.GetBytes(secret)).ToArray();
-            var key3 = sha1.ComputeHash(key2);
-            return Convert.ToBase64String(key3);
+            using (var sha1 = SHA1.Create())
+            {
+                var key1 = sha1.ComputeHash(Encoding.UTF8.GetBytes(body));
+                var key2 = key1.Concat(Encoding.UTF8.GetBytes(secret)).ToArray();
+                var key3 = sha1.ComputeHash(key2);
+                return Convert.ToBase64String(key3);
+            }
         }
     }
 }
