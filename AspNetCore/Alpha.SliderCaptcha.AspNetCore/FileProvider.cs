@@ -1,6 +1,7 @@
 using Alpha.SliderCaptcha.Core;
 using Alpha.SliderCaptcha.Core.Services;
 using Alpha.SliderCaptcha.ImageCaptcha.Services;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Alpha.SliderCaptcha.AspNetCore
 {
@@ -11,13 +12,13 @@ namespace Alpha.SliderCaptcha.AspNetCore
         private readonly IRandomService randomService;
 
         public FileProvider(
-            IWebHostEnvironment webHostEnvironment,
+            IHostingEnvironment hostingEnvironment,
             CaptchaOptions captchaOptions,
             IRandomService randomService)
         {
             this.randomService = randomService;
 
-            var imagePath = Path.Combine(webHostEnvironment.ContentRootPath, captchaOptions.ImagePath);
+            var imagePath = Path.Combine(hostingEnvironment?.ContentRootPath, captchaOptions?.ImagePath);
             sliderPaths = Directory.GetDirectories(Path.Combine(imagePath, "sliders"));
             backgroundFiles = Directory.GetFiles(Path.Combine(imagePath, "backgrounds"));
         }

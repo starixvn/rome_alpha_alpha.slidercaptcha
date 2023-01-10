@@ -3,7 +3,7 @@ using Alpha.SliderCaptcha.Core.Models;
 using Alpha.SliderCaptcha.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Alpha.SliderCaptcha.AspNetCore.Demo.Controllers
+namespace Alpha.SliderCaptcha.AspNetCore.Demo
 {
     public class SliderCaptchaController : Controller
     {

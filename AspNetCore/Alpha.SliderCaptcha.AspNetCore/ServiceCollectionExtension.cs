@@ -1,6 +1,8 @@
 using Alpha.SliderCaptcha.Core;
 using Alpha.SliderCaptcha.Core.Services;
 using Alpha.SliderCaptcha.ImageCaptcha.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Alpha.SliderCaptcha.AspNetCore
 {
