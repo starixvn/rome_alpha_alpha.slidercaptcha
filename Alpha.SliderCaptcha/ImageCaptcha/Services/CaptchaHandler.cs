@@ -1,9 +1,11 @@
 using System;
-using System.Drawing;
 using Alpha.SliderCaptcha.Core;
 using Alpha.SliderCaptcha.Core.Models;
 using Alpha.SliderCaptcha.Core.Services;
 using Alpha.SliderCaptcha.ImageCaptcha.Models;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace Alpha.SliderCaptcha.ImageCaptcha.Services
 {
@@ -39,22 +41,35 @@ namespace Alpha.SliderCaptcha.ImageCaptcha.Services
         public IGenerateModel Generate()
         {
             var imageProvider = fileProvider.CreateImageProvider();
-            var background = imageProvider.LoadBackground();
-            var sliderAlpha = imageProvider.LoadSliderAlpha();
+            var background = Image.Load<Rgba32>(imageProvider.BackgroundFile);
+            var sliderAlpha = Image.Load<Rgba32>(imageProvider.AlphaSliderPath);
             var x = randomService.Next(sliderAlpha.Width, background.Width - sliderAlpha.Width);
             var y = randomService.Next(background.Height - sliderAlpha.Height);
             var point = new Point(x, y);
-            using (var sliderBorder = imageProvider.LoadSliderBorder())
-            using (var sliderBase = imageProvider.LoadSliderBase())
+            var targetArea = sliderAlpha.Bounds();
+            var height = targetArea.Height;
+            sliderAlpha.ProcessPixelRows(background, (targetAccessor, sourceAccessor) =>
             {
-                BitmapExtensions.Copy(background, point, sliderAlpha);
-                using (var sliderGraphics = Graphics.FromImage(sliderAlpha))
-                using (var backgroundGraphics = Graphics.FromImage(background))
+                for (int i = 0; i < targetAccessor.Height; i++)
                 {
-                    sliderGraphics.DrawImage(sliderBorder, 0, 0, sliderBorder.Width, sliderBorder.Height);
-                    backgroundGraphics.DrawImage(sliderBase, point.X, point.Y, sliderBase.Width, sliderBase.Height);
+                    Span<Rgba32> sourceRow = sourceAccessor.GetRowSpan(point.Y + i);
+                    Span<Rgba32> targetRow = targetAccessor.GetRowSpan(i);
+                    for (int j = 0; j < targetRow.Length; j++)
+                    {
+                        ref Rgba32 pixel = ref targetRow[j];
+                        if (pixel.A != 0)
+                        {
+                            pixel = sourceRow[j];
+                        }
+                    }
+
                 }
-            }
+            });
+
+            var sliderBorder = Image.Load(imageProvider.BorderPath);
+            var sliderBase = Image.Load(imageProvider.BasePath);
+            sliderAlpha.Mutate(p => p.DrawImage(sliderBorder, new Point(0, 0), 1));
+            background.Mutate(p => p.DrawImage(sliderBase, point, 1));
 
             return new GenerateModel(background, sliderAlpha, point);
         }
