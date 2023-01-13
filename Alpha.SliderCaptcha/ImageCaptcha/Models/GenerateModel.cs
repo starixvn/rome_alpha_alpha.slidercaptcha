@@ -1,8 +1,9 @@
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using Alpha.SliderCaptcha.Core;
 using Alpha.SliderCaptcha.Core.Models;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
 
 namespace Alpha.SliderCaptcha.ImageCaptcha.Models
 {
@@ -10,13 +11,13 @@ namespace Alpha.SliderCaptcha.ImageCaptcha.Models
     {
         bool disposed = false;
 
-        public Bitmap Background { get; }
+        public Image Background { get; }
 
-        public Bitmap Slice { get; }
+        public Image Slice { get; }
 
         public Point Point { get; }
 
-        public GenerateModel(Bitmap background, Bitmap slice, Point point)
+        public GenerateModel(Image background, Image slice, Point point)
         {
             Background = background;
             Slice = slice;
@@ -52,8 +53,8 @@ namespace Alpha.SliderCaptcha.ImageCaptcha.Models
         {
             return new
             {
-                Background = Background.ToBase64String(ImageFormat.Jpeg),
-                Slice = Slice.ToBase64String(ImageFormat.Png),
+                Background = Background.ToBase64String(new JpegEncoder()),
+                Slice = Slice.ToBase64String(new PngEncoder()),
                 Position = Point.Y
             };
         }

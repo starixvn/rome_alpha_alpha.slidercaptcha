@@ -12,6 +12,14 @@ namespace Alpha.SliderCaptcha.ImageCaptcha.Services
         Bitmap LoadSliderBorder();
 
         Bitmap LoadSliderBase();
+
+        string BackgroundFile { get; }
+
+        string AlphaSliderPath { get; }
+
+        string BasePath { get; }
+
+        string BorderPath { get; }
     }
 
     public class ImageProvider : IImageProvider
@@ -24,6 +32,14 @@ namespace Alpha.SliderCaptcha.ImageCaptcha.Services
             this.backgroundFile = backgroundFile;
             this.sliderPath = sliderPath;
         }
+
+        public string BackgroundFile => backgroundFile;
+
+        public string AlphaSliderPath => Path.Combine(sliderPath, "alpha.png");
+
+        public string BasePath => Path.Combine(sliderPath, "base.png");
+
+        public string BorderPath => Path.Combine(sliderPath, "border.png");
 
         public Bitmap LoadBackground()
         {

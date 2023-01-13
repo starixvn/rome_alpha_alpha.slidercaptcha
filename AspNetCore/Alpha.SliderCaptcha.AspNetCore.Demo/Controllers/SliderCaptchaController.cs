@@ -17,14 +17,14 @@ namespace Alpha.SliderCaptcha.AspNetCore.Demo
         [HttpPost]
         public async Task<ActionResult> Generate([FromBody] GenerateRequestModel request)
         {
-            var result = await captchaService.GenerateAsync(request.Token, (CaptchaStyle)request.Style).ConfigureAwait(false);
+            var result = await captchaService.Generate(request.Token, (CaptchaStyle)request.Style).ConfigureAwait(false);
             return Json(result);
         }
 
         [HttpPost]
         public async Task<ActionResult> Verify([FromBody] VerifyRequestModel request)
         {
-            var result = await captchaService.VerifyAsync(request.Token, request.Data).ConfigureAwait(false);
+            var result = await captchaService.Verify(request.Token, request.Data).ConfigureAwait(false);
             return Json(new ResponseModel(result.Code, result.Reason));
         }
     }

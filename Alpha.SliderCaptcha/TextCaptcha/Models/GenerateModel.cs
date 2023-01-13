@@ -48,7 +48,7 @@ namespace Alpha.SliderCaptcha.TextCaptcha.Models
         {
             return new
             {
-                Background = Background.ToBase64String(ImageFormat.Jpeg)
+                //Background = Background.ToBase64String(ImageFormat.Jpeg)
             };
         }
     }

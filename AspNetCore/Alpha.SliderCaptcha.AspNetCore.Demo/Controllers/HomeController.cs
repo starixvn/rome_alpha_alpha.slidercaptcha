@@ -2,20 +2,20 @@
 using Microsoft.AspNetCore.Mvc;
 using Alpha.SliderCaptcha.AspNetCore.Demo.Models;
 using Alpha.SliderCaptcha.Core.Services;
-using Fanex.Caching;
+// using Fanex.Caching;
 
 namespace Alpha.SliderCaptcha.AspNetCore.Demo.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ICaptchaService captchaService;
-    private readonly ICacheService cacheService;
+    // private readonly ICacheService cacheService;
     private readonly IHttpContextService httpContextService;
 
-    public HomeController(ICaptchaService captchaService, ICacheService cacheService, IHttpContextService httpContextService)
+    public HomeController(ICaptchaService captchaService, IHttpContextService httpContextService)
     {
         this.captchaService = captchaService;
-        this.cacheService = cacheService;
+        // this.cacheService = cacheService;
         this.httpContextService = httpContextService;
     }
 
@@ -31,23 +31,23 @@ public class HomeController : Controller
         var isSuccess = false;
         var key = GetLoginCacheKey(model);
         string message;
-        if (cacheService.Contain(key))
+        // if (cacheService.Contain(key))
+        // {
+        var isVerifiedResult = await captchaService.IsVerified(model.Token).ConfigureAwait(false);
+        if (isVerifiedResult.IsSuccess)
         {
-            var isVerifiedResult = await captchaService.IsVerifiedAsync(model.Token).ConfigureAwait(false);
-            if (isVerifiedResult.IsSuccess)
-            {
-                cacheService.Remove(key);
-                return View(VerifyLogin(model));
-            }
-            else
-            {
-                message = "Please verify you are not a robot";
-            }
+            // cacheService.Remove(key);
+            return View(VerifyLogin(model));
         }
         else
         {
-            return View(VerifyLogin(model));
+            message = "Please verify you are not a robot";
         }
+        // }
+        // else
+        // {
+        //     return View(VerifyLogin(model));
+        // }
 
         return View(new IndexViewModel
         {
@@ -77,10 +77,10 @@ public class HomeController : Controller
         else
         {
             var key = GetLoginCacheKey(model);
-            cacheService.Set(key, 1, new CacheItemOptions
-            {
-                SlidingExpiration = TimeSpan.FromMinutes(5)
-            });
+            // cacheService.Set(key, 1, new CacheItemOptions
+            // {
+            //     SlidingExpiration = TimeSpan.FromMinutes(5)
+            // });
             return new IndexViewModel
             {
                 Username = model.Username,
