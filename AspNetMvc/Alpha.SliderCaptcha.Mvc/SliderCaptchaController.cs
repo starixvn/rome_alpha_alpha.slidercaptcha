@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Alpha.SliderCaptcha.Core;
-using Alpha.SliderCaptcha.Core.Models;
-using Alpha.SliderCaptcha.Core.Services;
+using Alpha.Captcha.Core;
+using Alpha.Captcha.Core.Models;
+using Alpha.Captcha.Core.Services;
 using Alpha.SliderCaptcha.Mvc.Models;
 using Fanex.Logging.Extensions.Web;
 
@@ -15,17 +15,16 @@ namespace Alpha.SliderCaptcha.Mvc
         private readonly CaptchaOptions captchaOptions;
         private readonly ICaptchaService captchaService;
 
-        public SliderCaptchaController()
+        public SliderCaptchaController(CaptchaOptions captchaOptions, ICaptchaService captchaService)
         {
-            captchaOptions = SliderCaptchaHandler.CaptchaOptions;
-            var serviceFactory = SliderCaptchaHandler.ServiceFactory;
-            captchaService = serviceFactory.CaptchaService;
+            this.captchaOptions = captchaOptions;
+            this.captchaService = captchaService;
         }
 
         [HttpPost]
         public async Task<ActionResult> Generate(GenerateRequestModel request)
         {
-            var result = await captchaService.GenerateAsync(request.Token, (CaptchaStyle)request.Style).ConfigureAwait(false);
+            var result = await captchaService.Generate(request.Token, (CaptchaStyle)request.Style).ConfigureAwait(false);
             WriteLog(request, result);
             return Json(result);
         }
@@ -33,7 +32,7 @@ namespace Alpha.SliderCaptcha.Mvc
         [HttpPost]
         public async Task<ActionResult> Verify(VerifyRequestModel request)
         {
-            var result = await captchaService.VerifyAsync(request.Token, request.Data).ConfigureAwait(false);
+            var result = await captchaService.Verify(request.Token, request.Data).ConfigureAwait(false);
             WriteLog(request, result);
             return Json(new ResponseModel(result.Code, result.Reason));
         }

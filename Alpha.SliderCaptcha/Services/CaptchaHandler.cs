@@ -1,13 +1,13 @@
 using System;
-using Alpha.SliderCaptcha.Core;
-using Alpha.SliderCaptcha.Core.Models;
-using Alpha.SliderCaptcha.Core.Services;
-using Alpha.SliderCaptcha.ImageCaptcha.Models;
+using Alpha.Captcha.Core;
+using Alpha.Captcha.Core.Models;
+using Alpha.Captcha.Core.Services;
+using Alpha.SliderCaptcha.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
-namespace Alpha.SliderCaptcha.ImageCaptcha.Services
+namespace Alpha.SliderCaptcha.Services
 {
     public class CaptchaHandler : ICaptchaHandler
     {
@@ -17,9 +17,9 @@ namespace Alpha.SliderCaptcha.ImageCaptcha.Services
 
         public CaptchaHandler(CaptchaOptions captchaOptions, IRandomService randomService, IFileProvider fileProvider)
         {
-            this.captchaOptions = captchaOptions ?? throw new ArgumentNullException(nameof(captchaOptions));
-            this.randomService = randomService ?? throw new ArgumentNullException(nameof(randomService));
-            this.fileProvider = fileProvider ?? throw new ArgumentNullException(nameof(fileProvider));
+            this.captchaOptions = captchaOptions;
+            this.randomService = randomService;
+            this.fileProvider = fileProvider;
         }
 
         public int Validate(string input, string expected)
@@ -46,8 +46,6 @@ namespace Alpha.SliderCaptcha.ImageCaptcha.Services
             var x = randomService.Next(sliderAlpha.Width, background.Width - sliderAlpha.Width);
             var y = randomService.Next(background.Height - sliderAlpha.Height);
             var point = new Point(x, y);
-            var targetArea = sliderAlpha.Bounds();
-            var height = targetArea.Height;
             sliderAlpha.ProcessPixelRows(background, (targetAccessor, sourceAccessor) =>
             {
                 for (int i = 0; i < targetAccessor.Height; i++)

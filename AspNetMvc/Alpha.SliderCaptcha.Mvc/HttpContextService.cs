@@ -1,7 +1,7 @@
+using Alpha.Captcha.Core;
+using Alpha.Captcha.Core.Services;
 using System;
 using System.Web;
-using Alpha.SliderCaptcha.Core;
-using Alpha.SliderCaptcha.Core.Services;
 
 namespace Alpha.SliderCaptcha.Mvc
 {

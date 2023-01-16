@@ -1,6 +1,6 @@
-﻿using Alpha.SliderCaptcha.Core.Models;
+﻿using Alpha.Captcha.Core.Models;
 
-namespace Alpha.SliderCaptcha.Core.Services
+namespace Alpha.Captcha.Core.Services
 {
     public interface ICaptchaHandler
     {

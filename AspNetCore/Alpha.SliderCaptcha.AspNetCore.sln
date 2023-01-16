@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alpha.SliderCaptcha.AspNetC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alpha.SliderCaptcha.AspNetCore.Demo", "Alpha.SliderCaptcha.AspNetCore.Demo\Alpha.SliderCaptcha.AspNetCore.Demo.csproj", "{895C3F9B-E551-4C60-90CE-02A009B4A4FE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alpha.Captcha.Core", "..\Alpha.Captcha.Core\Alpha.Captcha.Core.csproj", "{5E12876D-8B15-451A-A46F-EF157579CD02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{895C3F9B-E551-4C60-90CE-02A009B4A4FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{895C3F9B-E551-4C60-90CE-02A009B4A4FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{895C3F9B-E551-4C60-90CE-02A009B4A4FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E12876D-8B15-451A-A46F-EF157579CD02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E12876D-8B15-451A-A46F-EF157579CD02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E12876D-8B15-451A-A46F-EF157579CD02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E12876D-8B15-451A-A46F-EF157579CD02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

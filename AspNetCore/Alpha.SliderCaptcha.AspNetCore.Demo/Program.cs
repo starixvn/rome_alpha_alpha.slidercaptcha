@@ -1,5 +1,5 @@
 using Alpha.SliderCaptcha.AspNetCore;
-// using Fanex.Caching;
+using Fanex.Caching;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddHttpContextAccessor();
-// builder.Services.AddSingleton<ICacheService, CacheService>();
+builder.Services.AddSingleton<ICacheService, CacheService>();
 builder.Services.AddSliderCaptcha(builder.Configuration);
 
 builder.Services.AddControllersWithViews()

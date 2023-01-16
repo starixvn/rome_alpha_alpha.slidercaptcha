@@ -1,4 +1,4 @@
-﻿namespace Alpha.SliderCaptcha.Core
+﻿namespace Alpha.Captcha.Core
 {
     public class CaptchaOptions
     {

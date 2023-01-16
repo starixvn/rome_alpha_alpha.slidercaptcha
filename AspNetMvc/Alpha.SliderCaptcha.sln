@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alpha.SliderCaptcha.Mvc", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alpha.SliderCaptcha", "..\Alpha.SliderCaptcha\Alpha.SliderCaptcha.csproj", "{A11088FA-F44F-4244-AD42-424FA80FD199}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alpha.Captcha.Core", "..\Alpha.Captcha.Core\Alpha.Captcha.Core.csproj", "{5535A822-0D93-455A-BF6B-908FF2F1709C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{A11088FA-F44F-4244-AD42-424FA80FD199}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A11088FA-F44F-4244-AD42-424FA80FD199}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A11088FA-F44F-4244-AD42-424FA80FD199}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5535A822-0D93-455A-BF6B-908FF2F1709C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5535A822-0D93-455A-BF6B-908FF2F1709C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5535A822-0D93-455A-BF6B-908FF2F1709C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5535A822-0D93-455A-BF6B-908FF2F1709C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

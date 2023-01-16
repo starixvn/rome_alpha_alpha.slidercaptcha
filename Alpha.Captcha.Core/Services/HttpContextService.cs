@@ -1,4 +1,4 @@
-﻿namespace Alpha.SliderCaptcha.Core.Services
+﻿namespace Alpha.Captcha.Core.Services
 {
     public interface IHttpContextService
     {

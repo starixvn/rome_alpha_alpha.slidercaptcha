@@ -1,6 +1,6 @@
-using Alpha.SliderCaptcha.Core;
-using Alpha.SliderCaptcha.Core.Services;
-using Alpha.SliderCaptcha.ImageCaptcha.Services;
+using Alpha.Captcha.Core;
+using Alpha.Captcha.Core.Services;
+using Alpha.SliderCaptcha.Services;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Alpha.SliderCaptcha.AspNetCore

@@ -1,23 +1,27 @@
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
+using Alpha.Captcha.Core.Models;
 using Alpha.SliderCaptcha.Core;
-using Alpha.SliderCaptcha.Core.Models;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
 
-namespace Alpha.SliderCaptcha.TextCaptcha.Models
+namespace Alpha.SliderCaptcha.Models
 {
     public class GenerateModel : IGenerateModel
     {
         bool disposed = false;
 
-        public Bitmap Background { get; }
+        public Image Background { get; }
 
-        public string Text { get; }
+        public Image Slice { get; }
 
-        public GenerateModel(Bitmap background, string text)
+        public Point Point { get; }
+
+        public GenerateModel(Image background, Image slice, Point point)
         {
             Background = background;
-            Text = text;
+            Slice = slice;
+            Point = point;
         }
 
         public void Dispose()
@@ -34,6 +38,7 @@ namespace Alpha.SliderCaptcha.TextCaptcha.Models
             if (disposing)
             {
                 Background.Dispose();
+                Slice.Dispose();
             }
 
             disposed = true;
@@ -41,14 +46,16 @@ namespace Alpha.SliderCaptcha.TextCaptcha.Models
 
         public string GetCacheData()
         {
-            return Text;
+            return Point.X.ToString();
         }
 
         public object GetResponseData()
         {
             return new
             {
-                //Background = Background.ToBase64String(ImageFormat.Jpeg)
+                Background = Background.ToBase64String(new JpegEncoder()),
+                Slice = Slice.ToBase64String(new PngEncoder()),
+                Position = Point.Y
             };
         }
     }

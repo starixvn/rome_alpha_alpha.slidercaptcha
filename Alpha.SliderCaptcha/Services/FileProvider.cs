@@ -1,4 +1,4 @@
-namespace Alpha.SliderCaptcha.ImageCaptcha.Services
+namespace Alpha.SliderCaptcha.Services
 {
     public interface IFileProvider
     {

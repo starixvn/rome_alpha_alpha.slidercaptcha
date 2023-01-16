@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using System.Web;
-using Alpha.SliderCaptcha.Core;
-using Alpha.SliderCaptcha.Core.Services;
-using Alpha.SliderCaptcha.ImageCaptcha.Services;
+using Alpha.Captcha.Core;
+using Alpha.Captcha.Core.Services;
+using Alpha.SliderCaptcha.Services;
 
 namespace Alpha.SliderCaptcha.Mvc
 {

@@ -2,11 +2,10 @@ using System;
 using System.IO;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Formats.Jpeg;
 
 namespace Alpha.SliderCaptcha.Core
 {
-    public static class BitmapExtensions
+    public static class ImageExtensions
     {
         public static string ToBase64String(this Image image, IImageEncoder encoder)
         {

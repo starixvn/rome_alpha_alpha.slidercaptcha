@@ -1,5 +1,5 @@
-using Alpha.SliderCaptcha.Core;
-using Alpha.SliderCaptcha.Core.Services;
+using Alpha.Captcha.Core;
+using Alpha.Captcha.Core.Services;
 using Microsoft.AspNetCore.Http;
 
 namespace Alpha.SliderCaptcha.AspNetCore
@@ -22,7 +22,7 @@ namespace Alpha.SliderCaptcha.AspNetCore
             var httpContext = httpContextAccessor.HttpContext;
             var ip = httpContext.Request.Headers["HTTP_X_FORWARDED_FOR"].ToString() ?? httpContext.Connection.RemoteIpAddress.ToString();
 
-            return (string.IsNullOrEmpty(ip) || ip.Equals("::1")) ? "127.0.0.1" : ip.Split(',')[0];
+            return (string.IsNullOrEmpty(ip) || ip.Equals("::1", StringComparison.OrdinalIgnoreCase)) ? "127.0.0.1" : ip.Split(',')[0];
         }
 
         public void RemoveCookieToken()

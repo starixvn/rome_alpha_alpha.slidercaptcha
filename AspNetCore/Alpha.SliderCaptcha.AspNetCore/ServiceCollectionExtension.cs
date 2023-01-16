@@ -1,6 +1,6 @@
-using Alpha.SliderCaptcha.Core;
-using Alpha.SliderCaptcha.Core.Services;
-using Alpha.SliderCaptcha.ImageCaptcha.Services;
+using Alpha.Captcha.Core;
+using Alpha.Captcha.Core.Services;
+using Alpha.SliderCaptcha.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +18,7 @@ namespace Alpha.SliderCaptcha.AspNetCore
             services.AddSingleton<ITokenService, TokenService>();
             services.AddSingleton<IRandomService, RandomService>();
             services.AddSingleton<IFileProvider, FileProvider>();
+            services.AddSingleton<ICaptchaHandler, CaptchaHandler>();
             services.AddSingleton<ICaptchaService, CaptchaService>();
 
             return services;

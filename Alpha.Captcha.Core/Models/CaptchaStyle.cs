@@ -1,4 +1,4 @@
-﻿namespace Alpha.SliderCaptcha.Core.Models
+﻿namespace Alpha.Captcha.Core.Models
 {
     public enum CaptchaStyle
     {

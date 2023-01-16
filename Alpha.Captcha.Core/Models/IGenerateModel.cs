@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Alpha.SliderCaptcha.Core.Models
+namespace Alpha.Captcha.Core.Models
 {
-    public interface IGenerateModel: IDisposable
+    public interface IGenerateModel : IDisposable
     {
         string GetCacheData();
 

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Alpha.SliderCaptcha.Core.Services
+namespace Alpha.Captcha.Core.Services
 {
     public interface ITokenService
     {
