@@ -57,7 +57,7 @@ namespace Alpha.SliderCaptcha.Services
                         ref Rgba32 pixel = ref targetRow[j];
                         if (pixel.A != 0)
                         {
-                            pixel = sourceRow[j];
+                            pixel = sourceRow[point.X + j];
                         }
                     }
 
