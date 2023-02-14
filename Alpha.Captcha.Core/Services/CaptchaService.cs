@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Alpha.Captcha.Core.Models;
 using Fanex.Caching;
+using System.Text.Json;
 
 namespace Alpha.Captcha.Core.Services
 {
@@ -61,7 +62,7 @@ namespace Alpha.Captcha.Core.Services
                     Style = (byte)style,
                     Data = model.GetCacheData()
                 };
-                await cacheService.SetAsync(GetVerifyingCacheKey(token), cacheData, new CacheItemOptions
+                await cacheService.SetAsync(GetVerifyingCacheKey(token), JsonSerializer.Serialize(cacheData), new CacheItemOptions
                 {
                     RelativeExpiration = TimeSpan.FromMinutes(captchaOptions.DragTimeout)
                 }).ConfigureAwait(false);
@@ -78,7 +79,8 @@ namespace Alpha.Captcha.Core.Services
             }
 
             var verifyingCacheKey = GetVerifyingCacheKey(token);
-            var cacheData = await cacheService.GetAsync<CacheData>(verifyingCacheKey).ConfigureAwait(false);
+            var cacheDataJsonString = await cacheService.GetAsync<string>(verifyingCacheKey).ConfigureAwait(false);
+            var cacheData = JsonSerializer.Deserialize<CacheData>(cacheDataJsonString);
             if (cacheData == null)
             {
                 return new Result(Result.Timeout, "Timeout error. Please try again");

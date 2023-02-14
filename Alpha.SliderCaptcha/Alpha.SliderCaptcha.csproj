@@ -11,7 +11,7 @@
     <PackageTags>captcha</PackageTags>
     <Authors>@Rome</Authors>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>1.0.1-beta7</Version>
+    <Version>1.0.1-beta8</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
