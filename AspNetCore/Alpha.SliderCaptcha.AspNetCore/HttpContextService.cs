@@ -20,7 +20,8 @@ namespace Alpha.SliderCaptcha.AspNetCore
         public string GetClientIP()
         {
             var httpContext = httpContextAccessor.HttpContext;
-            var ip = httpContext.Request.Headers["HTTP_X_FORWARDED_FOR"].ToString() ?? httpContext.Connection.RemoteIpAddress.ToString();
+            var xForwardedFor = httpContext.Request.Headers["X-Forwarded-For"].ToString();
+            var ip = !string.IsNullOrEmpty(xForwardedFor) ? xForwardedFor : httpContext.Connection.RemoteIpAddress.ToString();
 
             return (string.IsNullOrEmpty(ip) || ip.Equals("::1", StringComparison.OrdinalIgnoreCase)) ? "127.0.0.1" : ip.Split(',')[0];
         }
