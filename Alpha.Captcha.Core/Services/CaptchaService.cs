@@ -80,6 +80,9 @@ namespace Alpha.Captcha.Core.Services
 
             var verifyingCacheKey = GetVerifyingCacheKey(token);
             var cacheDataJsonString = await cacheService.GetAsync<string>(verifyingCacheKey).ConfigureAwait(false);
+            if(string.IsNullOrWhiteSpace(cacheDataJsonString)){
+                return new Result(Result.Timeout, "Timeout error. Please try again");
+            }
             var cacheData = JsonSerializer.Deserialize<CacheData>(cacheDataJsonString);
             if (cacheData == null)
             {

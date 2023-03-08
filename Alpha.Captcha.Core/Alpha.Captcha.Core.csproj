@@ -7,7 +7,7 @@
     <PackageTags>captcha</PackageTags>
     <Copyright>Starixsoft</Copyright>
     <Authors>@Rome</Authors>
-    <Version>1.0.0-beta3</Version>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
