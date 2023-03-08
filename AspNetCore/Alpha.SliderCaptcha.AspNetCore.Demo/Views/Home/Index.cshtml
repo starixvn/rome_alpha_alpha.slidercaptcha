@@ -1,0 +1,54 @@
+﻿@model Alpha.SliderCaptcha.AspNetCore.Demo.Models.IndexViewModel
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<form class="form-signin" method="POST">
+    <select name="language" id="language" onchange="onLanguageChange(this.value)">
+        <option value="en-US">English</option>
+        <option value="zh-TW">繁體中文 (Taiwan)</option>
+        <option value="zh-CN">简体中文 (China)</option>
+    </select>
+    <h2 class="form-signin-heading">Please sign in</h2>
+    <h6 class="form-signin-heading">Use account: admin/admin</h6>
+    <label for="inputUsername" class="sr-only">Username</label>
+    <input type="text" id="inputUsername" name="username" class="form-control" placeholder="Username" value="@Model.Username" required autofocus>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+    <div id="captcha" name="token"></div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    <br />
+    <p>@Model.Message</p>
+</form>
+<div id="log">
+</div>
+
+@section Scripts {
+    <script>
+        function onLanguageChange(lang) {
+            if (scInstance) {
+                scInstance.changeLanguage(lang);
+            }
+        }
+    </script>
+
+    @if (Model.IsTokenRequired)
+    {
+        <script>
+            var logElement = document.getElementById('log');
+            function __log (msg) {
+                var p = document.createElement('p');
+                p.innerText = msg;
+                logElement.appendChild(p);
+            };
+            console.log = __log;
+
+            var scInstance = sliderCaptcha('captcha', {
+                lang: "vi-VN",
+                keyElement: document.getElementById('inputUsername'),
+                baseUri: "@Url.Content("~/")",
+            });
+
+        </script>
+    }
+}
